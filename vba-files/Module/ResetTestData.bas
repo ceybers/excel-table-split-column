@@ -1,4 +1,4 @@
-Attribute VB_Name = "ResetTestData"
+Attribute VB_Name = "modResetTestData"
 Option Explicit
 
 Private Const TEST_DATA_SHEETNAME as string = "Top10"
