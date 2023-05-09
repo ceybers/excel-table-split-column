@@ -1,16 +1,6 @@
 Attribute VB_Name = "modGetListObject"
 Option Explicit
 
-Public Sub TestGetListObject()
-    Dim lo As ListObject
-    Set lo = GetListObject()
-    If Not lo Is Nothing Then
-        Debug.Print "Lo: " & lo.Name
-    Else
-        Debug.Print "Lo is nothing"
-    End If
-End Sub
-
 Public Function GetListObject() As ListObject
     Set GetListObject = TryGetSelectedListObject()
     If Not GetListObject Is Nothing Then Exit Function
@@ -22,17 +12,20 @@ Public Function GetListObject() As ListObject
     If Not GetListObject Is Nothing Then Exit Function
 End Function
 
-Public Function TryGetSelectedListObject() As ListObject
+'@Description "If there is a ListObject on the current Selection, return it. Otherwise, return Nothing."
+Private Function TryGetSelectedListObject() As ListObject
     Set TryGetSelectedListObject = Selection.ListObject
 End Function
 
-Public Function TryGetListObjectOnSheet() As ListObject
+'@Description "If there is only one ListObject on the current ActiveSheet, return it. Otherwise, return Nothing."
+Private Function TryGetListObjectOnSheet() As ListObject
     If Activesheet.listobjects.Count = 1 Then
         Set TryGetListObjectOnSheet = Activesheet.listobjects(1)
     End If
 End Function
 
-Public Function TryGetOnlyListObjectInWorkbook() As ListObject
+'@Description "If there is only one ListObject in the entire ActiveWorkbook, return it. Otherwise, return Nothing."
+Private Function TryGetOnlyListObjectInWorkbook() As ListObject
     Dim result As ListObject
 
     Dim ws As Worksheet

@@ -1,16 +1,6 @@
 Attribute VB_Name = "modDoSplitTable"
 Option Explicit
 
-Public Sub TestDoSplitTable()
-    Dim lo As ListObject
-    Set lo = GetListObject
-
-    Dim lc As ListColumn
-    Set lc = GetListColumn(lo)
-
-    DoSplitTable lo, lc
-End Sub
-
 Public Sub DoSplitTable(ByVal lo As ListObject, ByVal lc As ListColumn)
     Dim sheetnames As Collection
     Set sheetnames = GetSheetNames(lc)
@@ -36,7 +26,6 @@ Public Sub DoSplitTable(ByVal lo As ListObject, ByVal lc As ListColumn)
     sourceWorksheet.Activate
 End Sub
 
-
 Private Function TryRemoveSheet(ByVal Name As String) As Boolean
     Dim ws As Worksheet
     For Each ws In Activeworkbook.Worksheets
@@ -55,13 +44,15 @@ Private Sub FilterWorksheet(ByVal ws As Worksheet, ByVal lcName As String, ByVal
     Set lo = ws.listobjects(1)
 
     Dim lcIndex As Long
-    lcIndex = lo.listcolumns(lcName).Index
+    lcIndex = lo.ListColumns(lcName).Index
 
     lo.Name = "tbl" & val
     lo.Range.Autofilter Field:=lcIndex, Criteria1:="<>" & val, Operator:=xlOr
 
+    Dim delRange As Range
+    Set delRange = lo.DataBodyRange.SpecialCells(xlCellTypeVisible)
     Application.DisplayAlerts = False
-    lo.DataBodyRange.SpecialCells(xlCellTypeVisible).Rows.Delete
+    If Not delRange Is Nothing Then delRange.Rows.Delete
     Application.DisplayAlerts = True
 
     lo.Range.Autofilter Field:=lcIndex

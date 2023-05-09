@@ -1,4 +1,5 @@
 Attribute VB_Name = "modResetTestData"
+'@Folder "Test"
 Option Explicit
 
 Private Const TEST_DATA_SHEETNAME As String = "Top10"
