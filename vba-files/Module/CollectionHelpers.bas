@@ -2,24 +2,27 @@ Attribute VB_Name = "CollectionHelpers"
 '@Folder "Helpers"
 Option Explicit
 
-Public Function ExistsInCollection(ByVal coll As Collection, ByVal val As Variant) As Boolean
-    Debug.Assert Not coll Is Nothing
+'@Description "Returns True if the given Value exists in a Collection."
+Public Function ExistsInCollection(ByVal Collection As Collection, ByVal Value As Variant) As Boolean
+Attribute ExistsInCollection.VB_Description = "Returns True if the given Value exists in a Collection."
+    Debug.Assert Not Collection Is Nothing
     
-    Dim v As Variant
-    
-    For Each v In coll
-        If v = val Then
+    Dim ThisValue As Variant
+    For Each ThisValue In Collection
+        If ThisValue = Value Then
             ExistsInCollection = True
             Exit Function
         End If
-    Next v
+    Next ThisValue
 End Function
 
-Public Sub CollectionClear(ByVal coll As Collection)
+'@Description "Removes all items in a Collection."
+Public Sub CollectionClear(ByVal Collection As Collection)
+Attribute CollectionClear.VB_Description = "Removes all items in a Collection."
+    Debug.Assert Not Collection Is Nothing
+    
     Dim i As Long
-    For i = coll.Count To 1 Step -1
-        coll.Remove i
+    For i = Collection.Count To 1 Step -1
+        Collection.Remove i
     Next i
 End Sub
-
-

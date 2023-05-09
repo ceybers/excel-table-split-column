@@ -1,4 +1,6 @@
 Attribute VB_Name = "modResetTestData"
+Attribute VB_Description = "Reloads Test Data into this worksheet from a reference file."
+'@ModuleDescription "Reloads Test Data into this worksheet from a reference file."
 '@Folder "Test"
 Option Explicit
 

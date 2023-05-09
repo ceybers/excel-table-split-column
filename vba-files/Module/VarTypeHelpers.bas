@@ -2,29 +2,34 @@ Attribute VB_Name = "VarTypeHelpers"
 '@Folder("Helpers")
 Option Explicit
 
-Public Function VarTypeToString(ByVal v As Long)
+Private Const UNDEFINED_CONSTANT As String = "undefined"
+Private Const ARRAY_SUFFIX As String = " (Array)"
+
+'@Description "Returns the string description of a VarType result"
+Public Function VarTypeToString(ByVal VarTypeValue As Long) As String
+Attribute VarTypeToString.VB_Description = "Returns the string description of a VarType result"
     Dim Result As String
     Dim IsArray As Boolean
-    Dim ConstantNames As Variant
-    ConstantNames = Array("vbEmpty", "vbNull", "vbInteger", "vbLong", "vbSingle", "vbDouble", "vbCurrency", "vbDate", _
+    Dim VarTypeConstants As Variant
+    VarTypeConstants = Array("vbEmpty", "vbNull", "vbInteger", "vbLong", "vbSingle", "vbDouble", "vbCurrency", "vbDate", _
         "vbString", "vbObject", "vbError", "vbBoolean", "vbVariant", "vbDataObject", "vbDecvimal", "vbByte", _
-        "undefined", "undefined", "vbLongLong")
+        UNDEFINED_CONSTANT, UNDEFINED_CONSTANT, "vbLongLong")
     
-    If v > 8192 Then
+    If VarTypeValue > vbArray Then
         IsArray = True
-        v = v - 8192
+        VarTypeValue = VarTypeValue - vbArray
     End If
     
-    If v = 36 Then
+    If VarTypeValue >= vbEmpty And VarTypeValue <= vbLongLong Then
+        Result = VarTypeConstants(VarTypeValue)
+    ElseIf VarTypeValue = vbUserDefinedType Then
         Result = "vbUserDefinedType"
-    ElseIf v >= 0 And v <= 20 Then
-        Result = ConstantNames(v)
     Else
-        Result = "undefined"
+        Result = UNDEFINED_CONSTANT
     End If
     
     If IsArray Then
-        Result = Result & " (Array)"
+        Result = Result & ARRAY_SUFFIX
     End If
     
     VarTypeToString = Result
