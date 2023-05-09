@@ -2,29 +2,6 @@ Attribute VB_Name = "modTestModules"
 '@Folder "Test"
 Option Explicit
 
-Public Sub TestColumnAnalysis()
-    Dim lo As ListObject
-    Dim lc As ListColumn
-    Dim ca As ColumnAnalysis
-    
-    Set lo = GetListObject()
-    For Each lc In lo.ListColumns
-        Set ca = New ColumnAnalysis
-        ca.Analyse lc
-        ca.DebugPrint
-    Next lc
-End Sub
-
-Public Sub TestDoSplitTable()
-    Dim lo As ListObject
-    Set lo = GetListObject
-
-    Dim lc As ListColumn
-    Set lc = GetListColumn(lo)
-
-    DoSplitTable lo, lc
-End Sub
-
 Public Sub TestGetListColumn()
     Dim lc As ListColumn
     Set lc = GetListColumn(GetListObject)
@@ -46,13 +23,13 @@ Public Sub TestGetListObject()
 End Sub
 
 Public Sub TestGetSheetNames()
-    Dim sheetnames As Collection
-    Set sheetnames = GetSheetNames(GetListColumn(GetListObject()))
-    If Not sheetnames Is Nothing Then
-        Debug.Print "sheetnames count: " & sheetnames.Count
+    Dim SheetNames As Collection
+    Set SheetNames = GetSheetNames(GetListColumn(GetListObject()))
+    If Not SheetNames Is Nothing Then
+        Debug.Print "sheetnames count: " & SheetNames.Count
         Dim i As Long
-        For i = 1 To sheetnames.Count
-            Debug.Print " "; i; " "; sheetnames(i)
+        For i = 1 To SheetNames.Count
+            Debug.Print " "; i; " "; SheetNames.Item(i)
             Next
         Else
             Debug.Print "sheetnames is nothing"

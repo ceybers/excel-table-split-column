@@ -1,23 +1,23 @@
 Attribute VB_Name = "modGetSheetNames"
+'@Folder "SplitTable"
 Option Explicit
 
 '@Description "Creates a collection of unique and valid sheet names from a ListColumn's DataBodyRange."
-Public Function GetSheetNames(ByVal lc As ListColumn) As Collection
+Public Function GetSheetNames(ByVal ListColumn As ListColumn) As Collection
+Attribute GetSheetNames.VB_Description = "Creates a collection of unique and valid sheet names from a ListColumn's DataBodyRange."
     Set GetSheetNames = New Collection
 
-    Dim vv As Variant
-    vv = lc.DataBodyRange.Value2
+    Dim Value2 As Variant
+    Value2 = ListColumn.DataBodyRange.Value2
+    
     Dim i As Long
-    Dim c As Long
-    c = UBound(vv, 1)
-
-    Dim v As Variant
-    For i = 1 To c
-        v = vv(i, 1)
-        If VarType(v) = vbString Then
-            If IsValidSheetName(v) Then
-                If Not ExistsInCollection(GetSheetNames, v) Then
-                    GetSheetNames.Add Item:=v, Key:=v
+    Dim ThisValue2 As Variant
+    For i = 1 To UBound(Value2, 1)
+        ThisValue2 = Value2(i, 1)
+        If VarType(ThisValue2) = vbString Then
+            If IsValidSheetName(ThisValue2) Then
+                If Not ExistsInCollection(GetSheetNames, ThisValue2) Then
+                    GetSheetNames.Add Item:=ThisValue2, Key:=ThisValue2
                 End If
             End If
         End If
