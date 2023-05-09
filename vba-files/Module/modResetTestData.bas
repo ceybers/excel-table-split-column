@@ -1,9 +1,9 @@
 Attribute VB_Name = "modResetTestData"
 Option Explicit
 
-Private Const TEST_DATA_SHEETNAME as string = "Top10"
-Private Const TEST_DATA_NAME as string = "TestData.xlsx"
-Private Const TEST_DATA_FULLNAME as string = "C:\Users\User\Documents\Work\excel-table-split-column\TestData.xlsx"
+Private Const TEST_DATA_SHEETNAME As String = "Top10"
+Private Const TEST_DATA_NAME As String = "TestData.xlsx"
+Private Const TEST_DATA_FULLNAME As String = "C:\Users\User\Documents\Work\excel-table-split-column\TestData.xlsx"
 
 Public Sub ResetTestData()
     TryOpenTestDataWorkbook
@@ -14,11 +14,11 @@ Public Sub ResetTestData()
 End Sub
 
 Private Sub TryOpenTestDataWorkbook()
-    Dim wb as Workbook
-    For each wb in Workbooks
-        If wb.name = TEST_DATA_NAME then
+    Dim wb As Workbook
+    For Each wb In Workbooks
+        If wb.Name = TEST_DATA_NAME Then
             Exit Sub
-        End if
+        End If
         Next
 
         Workbooks.Open Filename:=TEST_DATA_FULLNAME, ReadOnly:=True
@@ -27,7 +27,7 @@ End Sub
 Private Sub RemoveExcessWorksheets()
     Dim i As Long
     Application.DisplayAlerts = False
-    For i = ThisWorkbook.Worksheets.Count to 2 Step -1
+    For i = ThisWorkbook.Worksheets.Count To 2 Step -1
         ThisWorkbook.Worksheets(i).Delete
     Next i
     Application.DisplayAlerts = True
