@@ -5,6 +5,7 @@ Option Explicit
 Private Const TABLE_PREFIX As String = "tbl"
 
 Public Sub DoSplitTable(ByVal ListObject As ListObject, ByVal ListColumn As ListColumn)
+    ' TODO ListObject is redundant, derive it from ListColumn
     ' TODO Remove implicit references to ActiveWorkbook and ActiveSheet
     Dim sheetnames As Collection
     Set sheetnames = GetSheetNames(ListColumn)

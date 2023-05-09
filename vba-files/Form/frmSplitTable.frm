@@ -22,13 +22,36 @@ Private Type TState
 End Type
 Private This As TState
 
-
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
 
 Private Sub cmbOK_Click()
     Me.Hide
+End Sub
+
+Private Sub cmbSelectAll_Click()
+    'ListViewHelpers.CheckAllItems Me.lvUsedValues
+    mViewModel.DoCheckAllTargetSheets
+End Sub
+
+Private Sub cmbSelectNone_Click()
+    'ListViewHelpers.UncheckAllItems Me.lvUsedValues
+    mViewModel.DoCheckNoTargetSheets
+End Sub
+
+Private Sub lvAvailableColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    If Item.ForeColor <> vbGrayText Then
+        mViewModel.SelectListColumnByName Item.Text
+    End If
+End Sub
+
+Private Sub lvUsedValues_ItemCheck(ByVal Item As MSComctlLib.ListItem)
+    mViewModel.TryCheckTargetSheet Item.Text, Item.Checked
+End Sub
+
+Private Sub refColumn_Change()
+    'TrySelectColumnFromRefEdit Me.refColumn
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -47,6 +70,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
     Set mViewModel = ViewModel
     
     InitalizeFromViewModel
+    This.IsCancelled = False
     
     Me.Show
     
@@ -59,7 +83,13 @@ Private Sub mViewModel_PropertyChanged(PropertyName As String, vNewValue As Obje
             UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
         Case "UpdateListColumns":
             UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.ListColumns
+        Case "SelectedListColumn":
+            UpdateSelectedColumn Me.lvAvailableColumns, Me.refColumn
+        Case "UpdateTargetSheets":
+            UpdateTargetSheets Me.lvUsedValues, mViewModel.TargetSheets
     End Select
+    
+    UpdateControls
 End Sub
 
 Private Sub InitalizeFromViewModel()
@@ -118,4 +148,45 @@ End Sub
 
 Private Sub cboTable_Change()
     mViewModel.SelectListObjectByName Me.cboTable.Text
+End Sub
+
+Private Sub UpdateSelectedColumn(ByVal ListView As ListView, ByVal RefEdit As Object)
+    Dim ListItem As ListItem
+    For Each ListItem In ListView.ListItems
+        ListItem.Checked = (mViewModel.SelectedListColumn.Name = ListItem.Text)
+    Next ListItem
+    
+    'RefEdit.Text = mViewModel.SelectedListColumn.Name
+End Sub
+
+Private Sub UpdateTargetSheets(ByVal ListView As ListView, ByVal TargetSheets As Collection)
+    InitalizeTargetSheets ListView
+    
+    Dim ListItem As ListItem
+    Dim TargetSheet As TargetSheet
+    For Each TargetSheet In TargetSheets
+        Set ListItem = ListView.ListItems.Add(Text:=TargetSheet.Name)
+        ListItem.Checked = TargetSheet.Used
+    Next TargetSheet
+End Sub
+
+Private Sub InitalizeTargetSheets(ByVal ListView As ListView)
+    With ListView
+        .ListItems.Clear
+        
+        .ColumnHeaders.Clear
+        .ColumnHeaders.Add Text:="Sheet Name", Width:=ListView.Width - 16
+    
+        .View = lvwReport
+        .BorderStyle = ccNone
+        .Gridlines = True
+        .FullRowSelect = True
+        .CheckBoxes = True
+    End With
+End Sub
+
+Private Sub UpdateControls()
+    Me.cmbSelectAll.Enabled = mViewModel.CanSelectAll
+    Me.cmbSelectNone.Enabled = mViewModel.CanSelectNone
+    Me.cmbOK.Enabled = mViewModel.IsValid
 End Sub

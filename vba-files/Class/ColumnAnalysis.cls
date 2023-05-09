@@ -102,3 +102,16 @@ Public Sub DebugPrint()
     Debug.Print " Uniqueness: "; FormatPercent(Uniqueness, 0)
     Debug.Print " ColumnVarType: "; VarTypeToString(ColumnVarType)
 End Sub
+
+Public Function GetTargetSheets() As Collection
+    Set GetTargetSheets = New Collection
+    
+    Dim TargetSheetName As Variant
+    For Each TargetSheetName In This.UniqueValues
+        Dim TargetSheet As TargetSheet
+        Set TargetSheet = New TargetSheet
+        TargetSheet.Name = TargetSheetName
+        TargetSheet.Used = True
+        GetTargetSheets.Add Item:=TargetSheet, Key:=TargetSheetName
+    Next TargetSheetName
+End Function
