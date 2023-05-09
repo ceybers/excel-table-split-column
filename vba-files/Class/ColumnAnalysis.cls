@@ -95,3 +95,10 @@ Private Function AnalyseColumnUniqueness()
     Next v
 End Function
 
+Public Sub DebugPrint()
+    Debug.Print "ListColumn.Name: "; This.ListColumn.Name
+    Debug.Print " UniqueCount: "; UniqueCount
+    Debug.Print " AllCount: "; AllCount
+    Debug.Print " Uniqueness: "; FormatPercent(Uniqueness, 0)
+    Debug.Print " ColumnVarType: "; VarTypeToString(ColumnVarType)
+End Sub

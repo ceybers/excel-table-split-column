@@ -26,17 +26,17 @@ End Function
 
 '@Description "If there is only one ListObject in the entire ActiveWorkbook, return it. Otherwise, return Nothing."
 Private Function TryGetOnlyListObjectInWorkbook() As ListObject
-    Dim result As ListObject
+    Dim Result As ListObject
 
     Dim ws As Worksheet
     For Each ws In Activeworkbook.Worksheets
         If ws.listobjects.Count = 1 Then
             ' Exit without returning a result if there is already a ListObject set
-            If Not result Is Nothing Then Exit Function
+            If Not Result Is Nothing Then Exit Function
 
-            Set result = ws.listobjects(1)
+            Set Result = ws.listobjects(1)
         End If
     Next ws
 
-    Set TryGetOnlyListObjectInWorkbook = result
+    Set TryGetOnlyListObjectInWorkbook = Result
 End Function
