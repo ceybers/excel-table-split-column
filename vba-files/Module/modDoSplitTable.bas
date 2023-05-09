@@ -6,8 +6,8 @@ Private Const TABLE_PREFIX As String = "tbl"
 
 Public Sub DoSplitTable(ByVal ListObject As ListObject, ByVal ListColumn As ListColumn)
     ' TODO Remove implicit references to ActiveWorkbook and ActiveSheet
-    Dim SheetNames As Collection
-    Set SheetNames = GetSheetNames(ListColumn)
+    Dim sheetnames As Collection
+    Set sheetnames = GetSheetNames(ListColumn)
     
     Dim SourceWorksheet As Worksheet
     Set SourceWorksheet = ListObject.Parent
@@ -17,7 +17,7 @@ Public Sub DoSplitTable(ByVal ListObject As ListObject, ByVal ListColumn As List
 
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant
-    For Each SheetName In SheetNames
+    For Each SheetName In sheetnames
         TryRemoveSheet ActiveWorkbook, SheetName
         SourceWorksheet.Copy After:=PreviousWorksheet
         Set NewWorksheet = Worksheets.Item(PreviousWorksheet.Index + 1)

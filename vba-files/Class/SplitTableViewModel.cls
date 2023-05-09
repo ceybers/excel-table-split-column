@@ -7,109 +7,87 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "SplitTable"
+'@Folder "MVVM"
 Option Explicit
 
+Event PropertyChanged(PropertyName As String, vNewValue As Object)
+
 Private Type TState
-    ListObject As ListObject
-    ListColumn As ListColumn
-    AvailableColumns As Collection
-    UsedValues As Collection
-    HideUnsuitableColumns As Boolean
-    DeleteExistingSheets As Boolean
-    RemoveOtherSheets As Boolean
+    SelectedListObject As ListObject
+    ListObjects As Collection
+    ListColumns As Collection
 End Type
 Private This As TState
 
-Public Property Get ListObject() As ListObject
-    Set ListObject = This.ListObject
-  End Property
+Public Property Get ListColumns() As Collection
+    Debug.Assert Not This.ListColumns Is Nothing
+    Set ListColumns = This.ListColumns
+End Property
+
+Public Property Get SelectedListObject() As ListObject
+    If This.SelectedListObject Is Nothing Then Exit Property
+    Set SelectedListObject = This.SelectedListObject
+End Property
   
-'Public Property Set ListObject(ByVal vNewValue As ListObject)
-'    Set This.ListObject = vNewValue
-'End Property
-
-Public Property Get ListColumn() As ListColumn
-    Set ListColumn = This.ListColumn
-End Property
-
-'Public Property Set ListColumn(ByVal vNewValue As ListColumn)
-'    Set This.Column = vNewValue
-'End Property
-
-Public Property Get AvailableColumns() As Collection
-    Set AvailableColumns = This.AvailableColumns
-End Property
-
-'Public Property Set AvailableColumns(ByVal vNewValue As Collection)
-'    Set This.AvailableColumns = vNewValue
-'End Property
-
-Public Property Get UsedValues() As Collection
-    Set UsedValues = This.UsedValues
-    End Property
+Public Property Set SelectedListObject(ByVal vNewValue As ListObject)
+    If vNewValue Is Nothing Then Exit Property
     
-'Public Property Set UsedColumns(ByVal vNewValue As Collection)
-'    Set This.UsedColumns = vNewValue
-'End Property
-
-Public Property Get HideUnsuitableColumns() As Boolean
-    HideUnsuitableColumns = This.HideUnsuitableColumns
-End Property
-
-Public Property Let HideUnsuitableColumns(ByVal vNewValue As Boolean)
-    This.HideUnsuitableColumns = vNewValue
-End Property
-
-Public Property Get DeleteExistingSheets() As Boolean
-    DeleteExistingSheets = This.DeleteExistingSheets
-End Property
-
-Public Property Let DeleteExistingSheets(ByVal vNewValue As Boolean)
-    This.DeleteExistingSheets = vNewValue
-End Property
+    If Not This.SelectedListObject Is Nothing Then
+        If This.SelectedListObject = vNewValue Then
+            Exit Property
+        End If
+    End If
     
-Public Property Get RemoveOtherSheets() As Boolean
-    RemoveOtherSheets = This.RemoveOtherSheets
+    Set This.SelectedListObject = vNewValue
+    OnPropertyChanged "SelectedListObject", This.SelectedListObject
+    
+    UpdateListColumns
 End Property
 
-Public Property Let RemoveOtherSheets(ByVal vNewValue As Boolean)
-    This.RemoveOtherSheets = vNewValue
+Public Property Get ListObjects() As Collection
+    If This.ListObjects Is Nothing Then Exit Property
+    Set ListObjects = This.ListObjects
 End Property
 
-Public Sub Load(ByVal lc As ListColumn)
-    Debug.Assert Not lc Is Nothing
-    Set This.ListColumn = lc
-    Set This.ListObject = lc.Parent
-    
-    LoadAvailableColumns
-    
-    LoadUsedValues
+Public Sub Load(ByVal Workbook As Workbook)
+    Set This.ListObjects = ListObjectHelpers.GetAllListObjects(Workbook)
+    If This.ListObjects.Count > 0 Then
+        Set SelectedListObject = This.ListObjects.Item(1)
+    End If
 End Sub
 
-Private Sub LoadAvailableColumns()
-    Debug.Assert This.AvailableColumns Is Nothing
-    Set This.AvailableColumns = New Collection
-    
-    Dim lc As ListColumn
-    Dim ca As ColumnAnalysis
-    For Each lc In This.ListObject.ListColumns
-        Set ca = New ColumnAnalysis
-        ca.Analyse lc
-        This.AvailableColumns.Add Item:=ca, Key:=lc.Name
-    Next
+Private Sub OnPropertyChanged(ByVal PropertyName As String, vNewValue As Object)
+    Debug.Print "PropertyChanged('"; PropertyName; "', vNewValue)"
+    RaiseEvent PropertyChanged(PropertyName, vNewValue)
 End Sub
 
-Private Sub LoadUsedValues()
-    Set This.UsedValues = New Collection
+Public Sub SelectListObjectByName(ByVal ListObjectName As String)
+    Dim ListObject As ListObject
+    For Each ListObject In This.ListObjects
+        If ListObject.Name = ListObjectName Then
+            Set SelectedListObject = ListObject
+            Exit Sub
+        End If
+    Next ListObject
+End Sub
+
+Private Sub UpdateListColumns()
+    Debug.Assert Not This.ListColumns Is Nothing
+    Debug.Assert Not This.SelectedListObject Is Nothing
     
-    'Dim ca As ColumnAnalysis
-    'Set ca = This.AvailableColumns.Item(4)
+    CollectionHelpers.CollectionClear This.ListColumns
     
-    Dim uv As UsedValue
-    Set uv = New UsedValue
-    uv.Name = "Test"
-    uv.Used = True
+    Dim ListColumn As ListColumn
+    For Each ListColumn In This.SelectedListObject.ListColumns
+        Dim ColumnAnalysis As ColumnAnalysis
+        Set ColumnAnalysis = New ColumnAnalysis
+        ColumnAnalysis.Analyse ListColumn
+        This.ListColumns.Add Key:=ListColumn.Name, Item:=ColumnAnalysis
+    Next ListColumn
     
-    This.UsedValues.Add Item:=uv
+    OnPropertyChanged "UpdateListColumns", This.ListColumns 'TODO OnCollectionChanged?
+End Sub
+
+Private Sub Class_Initialize()
+    Set This.ListColumns = New Collection
 End Sub

@@ -3,24 +3,19 @@ Attribute VB_Name = "modTestSplitTableVM"
 Option Explicit
 
 Public Sub TestSplitTableVM()
-    Dim vm As SplitTableViewModel
-    Set vm = DummySplitTableViewModel
+    Dim ViewModel As SplitTableViewModel
+    Set ViewModel = New SplitTableViewModel
+    ViewModel.Load ActiveWorkbook
     
-    Dim view As frmSplitTable
-    Set view = New frmSplitTable
+    Dim View As frmSplitTable
+    Set View = frmSplitTable
     
-    If view.ShowDialog(vm) Then
-        Debug.Print "view.ShowDialog = true"
+    Dim ViewAsInterface As IView
+    Set ViewAsInterface = View
+    
+    If ViewAsInterface.ShowDialog(ViewModel) Then
+        Debug.Print "ViewAsInterface.ShowDialog(ViewModel) = True"
     Else
-        Debug.Print "view.ShowDialog = false"
+        Debug.Print "ViewAsInterface.ShowDialog(ViewModel) = False"
     End If
 End Sub
-
-Private Function DummySplitTableViewModel() As SplitTableViewModel
-    Dim Result As SplitTableViewModel
-    Set Result = New SplitTableViewModel
-    
-    Result.Load GetListColumn(GetListObject)
-    
-    Set DummySplitTableViewModel = Result
-End Function

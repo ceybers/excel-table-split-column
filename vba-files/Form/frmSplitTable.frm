@@ -14,83 +14,21 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Implements IView
 
-Private ViewModel As SplitTableViewModel
+Private WithEvents mViewModel As SplitTableViewModel
 Private Type TState
     IsCancelled As Boolean
 End Type
 Private This As TState
+
 
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
 
 Private Sub cmbOK_Click()
-    Hide
-End Sub
-
-Private Sub UserForm_Activate()
-    'InitializeAvailableColumns Me.lvAvailableColumns
-    'InitializeUsedValues Me.lvUsedValues
-End Sub
-
-Private Sub InitialiseListObject(ByVal cbo As ComboBox)
-    cbo.Clear
-    cbo.AddItem "Hello world"
-    cbo.Value = "Hello world"
-End Sub
-
-Private Sub InitialiseListColumn() 'ByVal re As RefEdit)
-    Me.refColumn.Text = "Testing 123"
-End Sub
-
-Private Sub InitializeAvailableColumns(ByVal lv As ListView)
-    With lv
-        .Appearance = cc3D
-        .BorderStyle = ccNone
-        .CheckBoxes = False
-        .FullRowSelect = True
-        .Gridlines = True
-        .LabelEdit = lvwManual
-        .view = lvwReport
-    End With
-    
-    lv.ListItems.Clear
-    
-    lv.ColumnHeaders.Clear
-    
-    lv.ColumnHeaders.Add Text:="Column Name"
-    lv.ColumnHeaders.Add Text:="Column Type", Width:=50
-    lv.ColumnHeaders.Add Text:="Uniqueness", Width:=50
-    
-    Dim ca As ColumnAnalysis
-    For Each ca In This.ViewModel.AvailableColumns
-        Dim li As ListItem
-        Set li = lv.ListItems.Add(Text:=ca.ListColumn.Name)
-        li.ListSubItems.Add Text:=VarTypeToString(ca.ColumnVarType - vbArray)
-        li.ListSubItems.Add Text:=FormatPercent(ca.Uniqueness, 0)
-    Next ca
-End Sub
-
-Private Sub InitializeUsedValues(ByVal lv As ListView)
-    With lv
-        .Appearance = cc3D
-        .BorderStyle = ccNone
-        .CheckBoxes = True
-        .FullRowSelect = True
-        .Gridlines = True
-        .LabelEdit = lvwManual
-        .view = lvwReport
-    End With
-    
-    lv.ListItems.Clear
-    
-    lv.ColumnHeaders.Clear
-    
-    lv.ColumnHeaders.Add Text:="Sheet Name", Width:=150
-    
-    Dim li As ListItem
-    Set li = lv.ListItems.Add(Text:="Airport")
+    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -105,14 +43,79 @@ Private Sub OnCancel()
     Hide
 End Sub
 
-Public Function ShowDialog(ByVal ViewModel As Object) As Boolean
-    Set This.ViewModel = ViewModel
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
+    Set mViewModel = ViewModel
     
-    InitialiseListObject Me.cboTable
-    InitialiseListColumn
-    InitializeAvailableColumns Me.lvAvailableColumns
-    InitializeUsedValues Me.lvUsedValues
+    InitalizeFromViewModel
     
-    Show
-    ShowDialog = Not This.IsCancelled
+    Me.Show
+    
+    IView_ShowDialog = Not This.IsCancelled
 End Function
+
+Private Sub mViewModel_PropertyChanged(PropertyName As String, vNewValue As Object)
+    Select Case PropertyName
+        Case "SelectedListObject":
+            UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
+        Case "UpdateListColumns":
+            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.ListColumns
+    End Select
+End Sub
+
+Private Sub InitalizeFromViewModel()
+    LoadListObjectsToCombobox Me.cboTable, mViewModel.ListObjects
+    'UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
+    mViewModel_PropertyChanged "SelectedListObject", Nothing
+    mViewModel_PropertyChanged "UpdateListColumns", Nothing
+End Sub
+
+Private Sub LoadListObjectsToCombobox(ByVal ComboBox As ComboBox, ByVal ListObjects As Collection)
+    ComboBox.Clear
+    Dim ListObject As ListObject
+    For Each ListObject In ListObjects
+        ComboBox.AddItem ListObject.Name
+    Next ListObject
+End Sub
+
+Private Sub UpdateSelectedListObject(ByVal ComboBox As ComboBox, ByVal ListObject As ListObject)
+    ComboBox = ListObject.Name
+End Sub
+
+Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal ListColumns As Collection)
+    InitalizeAvailableColumns ListView
+    
+    Dim ListItem As ListItem
+    Dim ColumnAnalysis As ColumnAnalysis
+    For Each ColumnAnalysis In ListColumns
+        Set ListItem = ListView.ListItems.Add(Text:=ColumnAnalysis.ListColumn.Name)
+        ListItem.ListSubItems.Add Text:=VarTypeToString(ColumnAnalysis.ColumnVarType)
+        
+        If ColumnAnalysis.ColumnVarType = (vbArray + vbString) Then
+            ListItem.ListSubItems.Add Text:=ColumnAnalysis.UniqueCount
+        Else
+            ListItem.ForeColor = vbGrayText
+            ListItem.ListSubItems.Item(1).ForeColor = vbGrayText
+        End If
+    Next ColumnAnalysis
+End Sub
+
+Private Sub InitalizeAvailableColumns(ByVal ListView As ListView)
+    With ListView
+        .ListItems.Clear
+        
+        .ColumnHeaders.Clear
+        .ColumnHeaders.Add Text:="Column Name", Width:=75
+        .ColumnHeaders.Add Text:="Type", Width:=50
+        .ColumnHeaders.Add Text:="Values", Width:=50
+    
+        .View = lvwReport
+        .BorderStyle = ccNone
+        .Gridlines = True
+        .FullRowSelect = True
+        .CheckBoxes = True
+    End With
+End Sub
+
+Private Sub cboTable_Change()
+    mViewModel.SelectListObjectByName Me.cboTable.Text
+End Sub
