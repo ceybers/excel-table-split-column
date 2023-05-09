@@ -14,3 +14,12 @@ Public Function ExistsInCollection(ByVal coll As Collection, ByVal val As Varian
         End If
     Next v
 End Function
+
+Public Sub CollectionClear(ByVal coll As Collection)
+    Dim i As Long
+    For i = coll.Count To 1 Step -1
+        coll.Remove i
+    Next i
+End Sub
+
+
