@@ -95,7 +95,7 @@ Public Sub LoadListView(ByVal ListView As ListView)
     Next ListItem
 End Sub
 
-Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewValue As Boolean) As Boolean
+Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewvalue As Boolean) As Boolean
     If SheetName = SELECT_ALL Then
         'If vNewValue And CanSelectAll Then
         '    SelectAll
@@ -108,7 +108,7 @@ Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewValue As Boo
         Dim ThisTargetSheet As TargetSheet
         Set ThisTargetSheet = This.Item(SheetName)
         
-        If vNewValue And ThisTargetSheet.Used = False Then
+        If vNewvalue And ThisTargetSheet.Used = False Then
             ThisTargetSheet.Used = True
             TryCheckByName = True
         ElseIf ThisTargetSheet.Used = True Then

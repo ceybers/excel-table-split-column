@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IView
 
+'@MemberAttribute VB_VarHelpID, -1
 Private WithEvents mViewModel As SplitTableViewModel
 Attribute mViewModel.VB_VarHelpID = -1
 Private Type TState
@@ -61,19 +62,13 @@ Private Sub cmbSelectNone_Click()
 End Sub
 
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
-    If Item.ForeColor <> vbGrayText Then
-        mViewModel.SelectListColumnByName Item.Text
-    Else
+    If Not mViewModel.TrySelectColumnByName(Item.Text) Then
         Item.Checked = False
     End If
 End Sub
 
 Private Sub lvAvailableColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    If Item.ForeColor <> vbGrayText Then
-        mViewModel.SelectListColumnByName Item.Text
-    Else
-        Item.Selected = False
-    End If
+    mViewModel.TrySelectColumnByName Item.Text
 End Sub
 
 Private Sub lvUsedValues_ItemCheck(ByVal Item As MSComctlLib.ListItem)
@@ -113,28 +108,31 @@ End Function
 
 Private Sub mViewModel_PropertyChanged(PropertyName As String)
     Select Case PropertyName
+        Case "SelectedListColumn":
+            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+        Case "ShowUnsuitableColumns":
+            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+        Case "ShowHiddenColumns":
+            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+            
         Case "SelectedListObject":
             UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
-        Case "UpdateListColumns":
-            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
-        Case "SelectedListColumn":
-            UpdateSelectedColumn Me.lvAvailableColumns, Me.refColumn
         Case "UpdateTargetSheets":
             UpdateTargetSheets Me.lvUsedValues, mViewModel.TargetSheets
-        Case "ShowHiddenColumns":
-            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
-        Case "ShowUnsuitableColumns":
-            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
     End Select
     
     UpdateControls
 End Sub
 
 Private Sub InitalizeFromViewModel()
+    
     LoadListObjectsToCombobox Me.cboTable, mViewModel.ListObjects
     'UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
     mViewModel_PropertyChanged "SelectedListObject"
-    mViewModel_PropertyChanged "UpdateListColumns"
+    
+    mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
+    mViewModel_PropertyChanged "SelectedListColumn"
+    mViewModel_PropertyChanged "UpdateTargetSheets"
 End Sub
 
 Private Sub LoadListObjectsToCombobox(ByVal ComboBox As ComboBox, ByVal ListObjects As Collection)
@@ -149,55 +147,12 @@ Private Sub UpdateSelectedListObject(ByVal ComboBox As ComboBox, ByVal ListObjec
     ComboBox = ListObject.Name
 End Sub
 
-' TODO Move this into AvailableColumns class module
-Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal AvailableColumns As AvailableColumns)
-    InitalizeAvailableColumns ListView
-
-    Dim ListItem As ListItem
-    Dim ThisAvailableColumn As AvailableColumn
-    For Each ThisAvailableColumn In AvailableColumns.GetAvailableColumns
-        Set ListItem = ListView.ListItems.Add(Text:=ThisAvailableColumn.Name)
-        If ThisAvailableColumn.Suitable Then
-            ListItem.ListSubItems.Add Text:="Text"
-            ListItem.ListSubItems.Add Text:=ThisAvailableColumn.UniqueValueCount
-        Else
-            ListItem.ListSubItems.Add Text:="Non-text"
-            ListItem.ForeColor = vbGrayText
-            ListItem.ListSubItems.Item(1).ForeColor = vbGrayText
-        End If
-    Next ThisAvailableColumn
-End Sub
-
-' TODO Move this into AvailableColumns class module
-Private Sub InitalizeAvailableColumns(ByVal ListView As ListView)
-    With ListView
-        .ListItems.Clear
-        
-        .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=75
-        .ColumnHeaders.Add Text:="Type", Width:=50
-        .ColumnHeaders.Add Text:="Values", Width:=50
-    
-        .View = lvwReport
-        .BorderStyle = ccNone
-        .Gridlines = True
-        .FullRowSelect = True
-        .CheckBoxes = True
-    End With
-End Sub
-
 Private Sub cboTable_Change()
     mViewModel.SelectListObjectByName Me.cboTable.Text
 End Sub
 
 Private Sub UpdateSelectedColumn(ByVal ListView As ListView, ByVal RefEdit As Object)
-    Dim ListItem As ListItem
-    For Each ListItem In ListView.ListItems
-        ListItem.Checked = (mViewModel.SelectedListColumn.Name = ListItem.Text)
-        ListItem.Selected = (mViewModel.SelectedListColumn.Name = ListItem.Text)
-    Next ListItem
-    
-    'RefEdit.Text = mViewModel.SelectedListColumn.Name
+    mViewModel.AvailableColumns.UpdateListView ListView
 End Sub
 
 ' TODO Move this into TargetSheets class module

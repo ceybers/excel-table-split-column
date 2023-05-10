@@ -1,14 +1,13 @@
-Attribute VB_Name = "modTestSplitTableVM"
-'@Folder("Test")
+Attribute VB_Name = "modTestAvailableColumns"
 Option Explicit
 
-Public Sub TestSplitTableVM()
+Public Sub TestAvailableColumns()
     Dim ViewModel As SplitTableViewModel
     Set ViewModel = New SplitTableViewModel
     ViewModel.Load ActiveWorkbook
     
-    Dim View As frmSplitTable
-    Set View = frmSplitTable
+    Dim View As frmTestAvailableColumns
+    Set View = frmTestAvailableColumns
     
     Dim ViewAsInterface As IView
     Set ViewAsInterface = View
@@ -22,5 +21,7 @@ Public Sub TestSplitTableVM()
 End Sub
 
 Private Sub ProcessViewModel(ByVal ViewModel As SplitTableViewModel)
-    Debug.Print "Done processing."
+    ' TODO Only split out selected items
+    'DoSplitTable ViewModel.SelectedListColumn.Parent, ViewModel.SelectedListColumn
 End Sub
+

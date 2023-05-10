@@ -20,14 +20,14 @@ Public Property Get Name() As String
     Name = This.Name
 End Property
 
-Public Property Let Name(ByVal vNewValue As String)
-    This.Name = vNewValue
+Public Property Let Name(ByVal vNewvalue As String)
+    This.Name = vNewvalue
 End Property
 
 Public Property Get Used() As Boolean
     Used = This.Used
 End Property
 
-Public Property Let Used(ByVal vNewValue As Boolean)
-    This.Used = vNewValue
+Public Property Let Used(ByVal vNewvalue As Boolean)
+    This.Used = vNewvalue
 End Property

@@ -3,7 +3,7 @@ Attribute VB_Name = "CollectionHelpers"
 Option Explicit
 
 '@Description "Returns True if the given Value exists in a Collection."
-Public Function ExistsInCollection(ByVal Collection As Collection, ByVal Value As Variant) As Boolean
+Public Function ExistsInCollection(ByVal Collection As Object, ByVal Value As Variant) As Boolean
 Attribute ExistsInCollection.VB_Description = "Returns True if the given Value exists in a Collection."
     Debug.Assert Not Collection Is Nothing
     
