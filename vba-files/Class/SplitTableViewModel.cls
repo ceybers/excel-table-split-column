@@ -121,7 +121,7 @@ Private Sub UpdateAvailableColumns()
     
     OnPropertyChanged "UpdateListColumns"
 
-    TrySelectColumnByName This.AvailableColumns.GetAvailableColumns()(1).Name
+    'TrySelectColumnByName This.AvailableColumns.GetAvailableColumns()(1).Name
 End Sub
 
 Private Sub UpdateTargetSheets()

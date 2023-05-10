@@ -17,9 +17,19 @@ Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collec
     Dim PreviousWorksheet As Worksheet
     Set PreviousWorksheet = SourceWorksheet
 
+    Dim SheetsToSplit As Long
+    Dim CurrentSheetNumber As Long
+    SheetsToSplit = SheetNames.Count
+    
+    Dim ProgressBarDialog As frmProgress
+    Set ProgressBarDialog = New frmProgress
+    ProgressBarDialog.Show
+    
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant
     For Each SheetName In SheetNames
+    CurrentSheetNumber = CurrentSheetNumber + 1
+        ProgressBarDialog.UpdateProgress CDbl(CurrentSheetNumber / SheetsToSplit)
         If Not SheetExists(SourceWorksheet.Parent, SheetName) Then
             'TryRemoveSheet ActiveWorkbook, SheetName
             SourceWorksheet.Copy After:=PreviousWorksheet

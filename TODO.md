@@ -7,24 +7,26 @@
 - [x] Handle cases where worksheet protection is enabled.
 - [x] Handle attempts to split into worksheets with invalid names.
 - [x] Handle cases where sheet names are numbers. (Collection object Key property issue)
-- [ ] Prompt user when no tables are found.
-- [ ] Handle cases where workbook protection is enabled.
+- [x] Prompt user when no tables are found.
+- [x] Handle cases where workbook protection is enabled.
 ## Available Columns
 - [x] Fix checkbox behaviour of "Available Columns" ListView.
 - [x] Option to hide hidden/zero width columns.
 - [x] Option to hide unsuitable (non-text) columns.
 - [x] Update ListView from AvailableColumns class instead of UserForm Code Behind
 - [x] BUG: Changing checkboxes resets selection of column.
-- [] Add warning icons to Available Columns with large amount of Unique Values.
+- [ ] Add warning icons to Available Columns with large amount of Unique Values.
+- [ ] Handle cases where there are no suitable columns in a ListObject.
 ## Target Sheets
-- [ ] Handle attempts to split into large amount of worksheets.
+- [x] Handle attempts to split into large amount of worksheets.
+  - Hardcoded a limit of 10 Unique values for now.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)
 - [ ] ~~Consider adding Target Name search box.~~
 - [ ] ~~"Add Current Selection to Filter" option for search box.~~
 - [ ] ~~Consider changing Select All/Select None Command Buttons to "(Select All)" List Item in List View. (See: Column Filter dropdown menu)~~
   - VBA ListView does not support tri-state checkboxes.
 ## Other
-- [ ] Progress bar dialog and confirmation of completion.
+- [x] Progress bar dialog and confirmation of completion.
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)
 - [ ] Option to remove the splitting column on the target sheets.
 ## Persistence
