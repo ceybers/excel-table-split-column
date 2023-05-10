@@ -42,9 +42,11 @@ Private Sub FilterWorksheet(ByVal Worksheet As Worksheet, ByVal ListColumnName A
     ListObject.Range.Autofilter Field:=ListColumnIndex, Criteria1:="<>" & SheetName, Operator:=xlOr
 
     Dim RangeToRemove As Range
-    Set RangeToRemove = ListObject.DataBodyRange.SpecialCells(xlCellTypeVisible)
+    Set RangeToRemove = ListObject.ListColumns(ListColumnName).DataBodyRange.SpecialCells(xlCellTypeVisible)
     Application.DisplayAlerts = False
-    If Not RangeToRemove Is Nothing Then RangeToRemove.Rows.Delete
+    If Not RangeToRemove Is Nothing Then
+        RangeToRemove.Rows.Delete
+    End If
     Application.DisplayAlerts = True
 
     ListObject.Range.Autofilter Field:=ListColumnIndex

@@ -13,13 +13,16 @@
 - [x] Fix checkbox behaviour of "Available Columns" ListView.
 - [x] Option to hide hidden/zero width columns.
 - [x] Option to hide unsuitable (non-text) columns.
+- [ ] Update ListView from AvailableColumns class instead of UserForm Code Behind
 - [ ] Add warning icons to Available Columns with large amount of Unique Values.
+- [ ] BUG: Changing checkboxes resets selection of column.
 ## Target Sheets
 - [ ] Handle attempts to split into large amount of worksheets.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)
-- [ ] Consider adding Target Name search box.
-- [ ] "Add Current Selection to Filter" option for search box.
-- [ ] Consider changing Select All/Select None Command Buttons to "(Select All)" List Item in List View. (See: Column Filter dropdown menu)
+- [ ] ~~Consider adding Target Name search box.~~
+- [ ] ~~"Add Current Selection to Filter" option for search box.~~
+- [ ] ~~Consider changing Select All/Select None Command Buttons to "(Select All)" List Item in List View. (See: Column Filter dropdown menu)~~
+  - VBA ListView does not support tri-state checkboxes.
 ## Other
 - [ ] Progress bar dialog and confirmation of completion.
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)

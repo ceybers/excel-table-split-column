@@ -18,7 +18,7 @@ Private Type TState
     SelectedListColumn As ListColumn
     ListColumns As Collection ' TODO Remove ifo Available Columns
     AvailableColumns As AvailableColumns
-    TargetSheets As Collection ' of type TargetSheet
+    TargetSheets As TargetSheets
     ShowHiddenColumns As Boolean
     ShowUnsuitableColumns As Boolean
     DeleteExistingSheets As Boolean
@@ -29,20 +29,20 @@ Private This As TState
 Public Property Get IsValid() As Boolean
     If SelectedListObject Is Nothing Then Exit Property
     If SelectedListColumn Is Nothing Then Exit Property
-    If TargetSheetPercentage = 0 Then Exit Property
+    If CanSelectNone = False Then Exit Property
     
     IsValid = True
 End Property
 
 Public Property Get CanSelectAll() As Boolean
-    CanSelectAll = TargetSheetPercentage < 1 And This.TargetSheets.Count > 0
+    CanSelectAll = This.TargetSheets.CanSelectAll
 End Property
 
 Public Property Get CanSelectNone() As Boolean
-    CanSelectNone = TargetSheetPercentage > 0
+    CanSelectNone = This.TargetSheets.CanSelectNone
 End Property
 
-Public Property Get TargetSheets() As Collection
+Public Property Get TargetSheets() As TargetSheets
     Set TargetSheets = This.TargetSheets
 End Property
 
@@ -136,6 +136,11 @@ Public Property Let RemoveOtherSheets(ByVal vNewValue As Boolean)
     OnPropertyChanged "RemoveOtherSheets"
 End Property
 
+Private Sub Class_Initialize()
+    Set This.AvailableColumns = New AvailableColumns
+    Set This.TargetSheets = New TargetSheets
+End Sub
+
 Public Sub Load(ByVal Workbook As Workbook)
     Set This.ListObjects = ListObjectHelpers.GetAllListObjects(Workbook)
     If This.ListObjects.Count > 0 Then
@@ -159,7 +164,10 @@ Public Sub SelectListObjectByName(ByVal ListObjectName As String)
 End Sub
 
 Public Sub SelectListColumnByName(ByVal ListColumnName As String)
-    Set SelectedListColumn = This.SelectedListObject.ListColumns(ListColumnName)
+    'Set SelectedListColumn = This.SelectedListObject.ListColumns(ListColumnName)
+    If This.AvailableColumns.TrySelectByName(ListColumnName) Then
+        Set SelectedListColumn = This.SelectedListObject.ListColumns(AvailableColumns.Selected.Name)
+    End If
 End Sub
 
 Private Sub UpdateAvailableColumns()
@@ -187,55 +195,15 @@ Private Sub UpdateAvailableColumns()
     
 End Sub
 
-Private Sub Class_Initialize()
-    'Set This.ListColumns = New Collection
-    Set This.AvailableColumns = New AvailableColumns
-    Set This.TargetSheets = New Collection
-End Sub
-
 Private Sub UpdateTargetSheets()
-    Set This.TargetSheets = ColumnAnalysis.Create(This.SelectedListColumn).GetTargetSheets
+    Debug.Assert Not This.SelectedListColumn Is Nothing
+    This.TargetSheets.Load This.SelectedListColumn
+    'Set This.TargetSheets = ColumnAnalysis.Create(This.SelectedListColumn).GetTargetSheets
     OnPropertyChanged "UpdateTargetSheets"
 End Sub
 
-Private Function TargetSheetPercentage() As Double
-    Dim Numerator As Long
-    Dim Denominator As Long
-    Denominator = This.TargetSheets.Count
-    If Denominator = 0 Then Exit Function
-    
-    Dim TargetSheet As TargetSheet
-    For Each TargetSheet In This.TargetSheets
-        If TargetSheet.Used Then
-            Numerator = Numerator + 1
-        End If
-    Next TargetSheet
-    
-    TargetSheetPercentage = Numerator / Denominator
-End Function
-
-Public Sub DoCheckAllTargetSheets()
-    Dim TargetSheet As TargetSheet
-    For Each TargetSheet In This.TargetSheets
-        TargetSheet.Used = True
-    Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
-End Sub
-
-Public Sub DoCheckNoTargetSheets()
-    Dim TargetSheet As TargetSheet
-    For Each TargetSheet In This.TargetSheets
-        TargetSheet.Used = False
-    Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
-End Sub
-
 Public Sub TryCheckTargetSheet(ByVal TargetSheetName As String, ByVal vNewValue As Boolean)
-    Dim TargetSheet As TargetSheet
-    For Each TargetSheet In This.TargetSheets
-        If TargetSheet.Name = TargetSheetName Then
-            TargetSheet.Used = vNewValue
-        End If
-    Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
+    If This.TargetSheets.TryCheckByName(TargetSheetName, vNewValue) Then
+        OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
+    End If
 End Sub

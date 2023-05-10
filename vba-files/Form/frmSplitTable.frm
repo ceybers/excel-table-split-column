@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSplitTable 
    Caption         =   "Split Table by Columns"
-   ClientHeight    =   5955
+   ClientHeight    =   6015
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   8250.001
@@ -13,10 +13,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@Folder "MVVM"
 Option Explicit
 Implements IView
 
 Private WithEvents mViewModel As SplitTableViewModel
+Attribute mViewModel.VB_VarHelpID = -1
 Private Type TState
     IsCancelled As Boolean
 End Type
@@ -47,13 +49,15 @@ Private Sub cmbOK_Click()
 End Sub
 
 Private Sub cmbSelectAll_Click()
-    'ListViewHelpers.CheckAllItems Me.lvUsedValues
-    mViewModel.DoCheckAllTargetSheets
+    If mViewModel.TargetSheets.SelectAll Then
+        mViewModel_PropertyChanged "UpdateTargetSheets"
+    End If
 End Sub
 
 Private Sub cmbSelectNone_Click()
-    'ListViewHelpers.UncheckAllItems Me.lvUsedValues
-    mViewModel.DoCheckNoTargetSheets
+    If mViewModel.TargetSheets.SelectNone Then
+        mViewModel_PropertyChanged "UpdateTargetSheets"
+    End If
 End Sub
 
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
@@ -76,9 +80,13 @@ Private Sub lvUsedValues_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     mViewModel.TryCheckTargetSheet Item.Text, Item.Checked
 End Sub
 
-Private Sub refColumn_Change()
-    'TrySelectColumnFromRefEdit Me.refColumn
+Private Sub lvUsedValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    mViewModel.TryCheckTargetSheet Item.Text, True
 End Sub
+
+'Private Sub refColumn_Change()
+    'TrySelectColumnFromRefEdit Me.refColumn
+'End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
@@ -141,6 +149,7 @@ Private Sub UpdateSelectedListObject(ByVal ComboBox As ComboBox, ByVal ListObjec
     ComboBox = ListObject.Name
 End Sub
 
+' TODO Move this into AvailableColumns class module
 Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal AvailableColumns As AvailableColumns)
     InitalizeAvailableColumns ListView
 
@@ -159,6 +168,7 @@ Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal AvailableCo
     Next ThisAvailableColumn
 End Sub
 
+' TODO Move this into AvailableColumns class module
 Private Sub InitalizeAvailableColumns(ByVal ListView As ListView)
     With ListView
         .ListItems.Clear
@@ -190,17 +200,13 @@ Private Sub UpdateSelectedColumn(ByVal ListView As ListView, ByVal RefEdit As Ob
     'RefEdit.Text = mViewModel.SelectedListColumn.Name
 End Sub
 
-Private Sub UpdateTargetSheets(ByVal ListView As ListView, ByVal TargetSheets As Collection)
+' TODO Move this into TargetSheets class module
+Private Sub UpdateTargetSheets(ByVal ListView As ListView, ByVal TargetSheets As TargetSheets)
     InitalizeTargetSheets ListView
-    
-    Dim ListItem As ListItem
-    Dim TargetSheet As TargetSheet
-    For Each TargetSheet In TargetSheets
-        Set ListItem = ListView.ListItems.Add(Text:=TargetSheet.Name)
-        ListItem.Checked = TargetSheet.Used
-    Next TargetSheet
+    TargetSheets.LoadListView ListView
 End Sub
 
+' TODO Move this into TargetSheets class module
 Private Sub InitalizeTargetSheets(ByVal ListView As ListView)
     With ListView
         .ListItems.Clear

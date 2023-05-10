@@ -13,10 +13,15 @@ Option Explicit
 
 Private Type TState
     Item As Collection
+    Selected As Variant
     ShowHidden As Boolean
     ShowUnsuitable As Boolean
 End Type
 Private This As TState
+
+Public Property Get Selected() As Variant
+    Set Selected = This.Selected
+End Property
 
 Public Property Get ShowHidden() As Boolean
     ShowHidden = This.ShowHidden
@@ -62,4 +67,16 @@ End Function
 
 Public Function GetByName(ByVal ColumnName As String) As AvailableColumn
     Set GetByName = This.Item(ColumnName)
+End Function
+
+Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
+    Dim AvailableColumn As AvailableColumn
+    For Each AvailableColumn In This.Item
+        AvailableColumn.Selected = AvailableColumn.Name = ColumnName
+        If AvailableColumn.Selected Then
+            Set This.Selected = AvailableColumn
+        End If
+    Next AvailableColumn
+    
+    TrySelectByName = True
 End Function
