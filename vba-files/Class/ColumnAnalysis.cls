@@ -78,7 +78,7 @@ Private Static Function AnalyseColumnVarType(ByVal vv As Variant) As Long
     AnalyseColumnVarType = colVarType
 End Function
 
-Private Function AnalyseColumnUniqueness()
+Private Sub AnalyseColumnUniqueness()
     Debug.Assert This.AllValues Is Nothing
     Debug.Assert This.UniqueValues Is Nothing
     
@@ -94,7 +94,7 @@ Private Function AnalyseColumnUniqueness()
             This.AllValues.Add Item:=v
         End If
     Next v
-End Function
+End Sub
 
 Public Sub DebugPrint()
     Debug.Print "ListColumn.Name: "; This.ListColumn.Name
@@ -112,7 +112,8 @@ Public Function GetTargetSheets() As Collection
         Dim TargetSheet As TargetSheet
         Set TargetSheet = New TargetSheet
         TargetSheet.Name = TargetSheetName
-        TargetSheet.Used = True
+        TargetSheet.Suitable = WorksheetHelpers.IsValidSheetName(TargetSheetName)
+        TargetSheet.Used = TargetSheet.Suitable
         GetTargetSheets.Add Item:=TargetSheet, Key:=TargetSheetName
     Next TargetSheetName
 End Function

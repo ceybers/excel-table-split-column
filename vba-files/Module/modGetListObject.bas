@@ -23,7 +23,7 @@ End Function
 Private Function TryGetListObjectOnSheet() As ListObject
 Attribute TryGetListObjectOnSheet.VB_Description = "If there is only one ListObject on the current ActiveSheet, return it. Otherwise, return Nothing."
     If Activesheet.ListObjects.Count = 1 Then
-        Set TryGetListObjectOnSheet = Activesheet.ListObjects(1)
+        Set TryGetListObjectOnSheet = Activesheet.ListObjects.Item(1)
     End If
 End Function
 
@@ -38,7 +38,7 @@ Attribute TryGetOnlyListObjectInWorkbook.VB_Description = "If there is only one 
             ' Exit without returning a result if there is already a ListObject set
             If Not Result Is Nothing Then Exit Function
 
-            Set Result = ws.ListObjects(1)
+            Set Result = ws.ListObjects.Item(1)
         End If
     Next ws
 

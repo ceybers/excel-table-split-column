@@ -21,6 +21,7 @@ Public Sub TestAvailableColumns()
 End Sub
 
 Private Sub ProcessViewModel(ByVal ViewModel As SplitTableViewModel)
+    Debug.Print "NYI"
     ' TODO Only split out selected items
     'DoSplitTable ViewModel.SelectedListColumn.Parent, ViewModel.SelectedListColumn
 End Sub

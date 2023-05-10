@@ -14,6 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '@Folder "MVVM"
 Option Explicit
 Implements IView
@@ -43,9 +44,7 @@ Private Sub cmbOK_Click()
 End Sub
 
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
-    If mViewModel.TrySelectColumnByName(Item.Text) Then
-        'mViewModel_PropertyChanged "SelectedListColumn"
-    Else
+    If Not mViewModel.TrySelectColumnByName(Item.Text) Then
         Item.Checked = False
     End If
 End Sub
@@ -63,7 +62,7 @@ End Sub
 
 Private Sub OnCancel()
     This.IsCancelled = True
-    Hide
+    Me.Hide
 End Sub
 
 Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
@@ -83,7 +82,7 @@ Private Sub InitalizeFromViewModel()
     'mViewModel_PropertyChanged "UpdateListColumns"
 End Sub
 
-Private Sub mViewModel_PropertyChanged(PropertyName As String)
+Private Sub mViewModel_PropertyChanged(ByVal PropertyName As String)
     Select Case PropertyName
         Case "SelectedListColumn":
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns

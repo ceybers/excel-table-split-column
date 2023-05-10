@@ -3,19 +3,19 @@
 - [x] Run Split procedure from code.
 - [x] Run Split procedure from UI.
 ## Halting Errors
+- [x] Handle cases where a table only has one row. (`.Value2` will then be a Variant and not an Array of Variants)
+- [x] Handle cases where worksheet protection is enabled.
+- [x] Handle attempts to split into worksheets with invalid names.
+- [x] Handle cases where sheet names are numbers. (Collection object Key property issue)
 - [ ] Prompt user when no tables are found.
-- [ ] Handle cases where a table only has one row. (`.Value2` will then be a Variant and not an Array of Variants)
 - [ ] Handle cases where workbook protection is enabled.
-- [ ] Handle cases where worksheet protection is enabled.
-- [ ] Handle attempts to split into worksheets with invalid names.
-- [ ] Handle cases where sheet names are numbers. (Collection object Key property issue)
 ## Available Columns
 - [x] Fix checkbox behaviour of "Available Columns" ListView.
 - [x] Option to hide hidden/zero width columns.
 - [x] Option to hide unsuitable (non-text) columns.
-- [ ] Update ListView from AvailableColumns class instead of UserForm Code Behind
-- [ ] Add warning icons to Available Columns with large amount of Unique Values.
-- [ ] BUG: Changing checkboxes resets selection of column.
+- [x] Update ListView from AvailableColumns class instead of UserForm Code Behind
+- [x] BUG: Changing checkboxes resets selection of column.
+- [] Add warning icons to Available Columns with large amount of Unique Values.
 ## Target Sheets
 - [ ] Handle attempts to split into large amount of worksheets.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)

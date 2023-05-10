@@ -11,9 +11,10 @@ Attribute VB_Exposed = False
 '@Folder("Model")
 Option Explicit
 
-Private Const SELECT_ALL As String = "(Select all)"
+Private Const KEY_PREFIX As String = "K"
 
 Private Type TState
+    ListColumn As ListColumn
     Item As Collection ' of type TargetSheet
 End Type
 Private This As TState
@@ -23,10 +24,13 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Sub Load(ByVal ListColumn As ListColumn)
+    Set This.ListColumn = ListColumn
     Set This.Item = ColumnAnalysis.Create(ListColumn).GetTargetSheets
 End Sub
 
+'@Description "Returns a Collection of TargetSheet where the Used property is True"
 Public Function GetSelectedSheetNames() As Collection
+Attribute GetSelectedSheetNames.VB_Description = "Returns a Collection of TargetSheet where the Used property is True"
     Set GetSelectedSheetNames = New Collection
     
     Dim ThisTargetSheet As TargetSheet
@@ -76,44 +80,63 @@ Public Property Get CanSelectNone() As Boolean
     CanSelectNone = SelectedItems > 0 And This.Item.Count > 0
 End Property
 
-Public Sub LoadListView(ByVal ListView As ListView)
-    If ListView.ListItems.Count <> This.Item.Count Then
-        ListView.ListItems.Clear
-    End If
-    
-    Dim ThisTargetSheet As TargetSheet
-    If ListView.ListItems.Count = 0 Then
-        For Each ThisTargetSheet In This.Item
-            ListView.ListItems.Add Text:=ThisTargetSheet.Name, Key:=ThisTargetSheet.Name
-        Next ThisTargetSheet
-    End If
-    
+Public Sub UpdateListView(ByVal ListView As ListView4)
     Dim ListItem As ListItem
-    For Each ListItem In ListView.ListItems
-        ListItem.Checked = This.Item(ListItem.Text).Used
-        ListItem.Selected = This.Item(ListItem.Text).Used
-    Next ListItem
+
+    Dim TargetSheet As TargetSheet
+    For Each TargetSheet In This.Item
+        If Not ExistsInCollection(ListView.ListItems, TargetSheet.Name) Then
+            Set ListItem = ListView.ListItems.Add(Text:=TargetSheet.Name, Key:=KEY_PREFIX & TargetSheet.Name)
+            ListItem.ListSubItems.Add Index:=1, Key:="SortIndex", Text:=0 'TODO NYI
+            If Not TargetSheet.Suitable Then
+                ListItem.ForeColor = vbGrayText
+            End If
+        End If
+    Next TargetSheet
+
+    Dim i As Long
+    For i = ListView.ListItems.Count To 1 Step -1
+        If Not ExistsInCollection(This.Item, ListView.ListItems.Item(i).Text) Then
+            ListView.ListItems.Remove i
+        End If
+    Next i
+
+    For Each TargetSheet In This.Item
+        Set ListItem = ListView.ListItems(KEY_PREFIX & TargetSheet.Name)
+        ListItem.Checked = TargetSheet.Used
+        ListItem.Selected = False
+        'ListItem.Selected = TargetSheet.Used
+        'ListItem.ListSubItems.Item("SortIndex").Text = TargetSheet.Index
+    Next TargetSheet
 End Sub
 
-Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewvalue As Boolean) As Boolean
-    If SheetName = SELECT_ALL Then
-        'If vNewValue And CanSelectAll Then
-        '    SelectAll
-        '    TryCheckByName = True
-        'ElseIf CanSelectNone Then
-        '    SelectNone
-        '    TryCheckByName = True
-        'End If
-    Else
-        Dim ThisTargetSheet As TargetSheet
-        Set ThisTargetSheet = This.Item(SheetName)
+Public Sub InitalizeTargetSheets(ByVal ListView As ListView4)
+    With ListView
+        .ListItems.Clear
         
-        If vNewvalue And ThisTargetSheet.Used = False Then
-            ThisTargetSheet.Used = True
-            TryCheckByName = True
-        ElseIf ThisTargetSheet.Used = True Then
-            ThisTargetSheet.Used = False
-            TryCheckByName = True
-        End If
-    End If
+        .ColumnHeaders.Clear
+        .ColumnHeaders.Add Text:="Sheet Name", Width:=ListView.Width - 16
+        .ColumnHeaders.Add Text:="idx", Width:=0
+    
+        .View = lvwReport
+        .BorderStyle = ccNone
+        .Gridlines = True
+        .FullRowSelect = True
+        .CheckBoxes = True
+        .LabelEdit = lvwManual
+        .MultiSelect = False
+        '.HotTracking = True
+        '.HideSelection = False
+    End With
+End Sub
+
+Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewValue As Boolean) As Boolean
+    Dim ThisTargetSheet As TargetSheet
+    Set ThisTargetSheet = This.Item(SheetName)
+ 
+    If Not ThisTargetSheet.Suitable Then Exit Function
+    
+    ThisTargetSheet.Used = Not ThisTargetSheet.Used
+    
+    TryCheckByName = True
 End Function

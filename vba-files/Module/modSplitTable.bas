@@ -1,14 +1,15 @@
-Attribute VB_Name = "modDoSplitTable"
+Attribute VB_Name = "modSplitTable"
 '@Folder "SplitTable"
 Option Explicit
 
 Private Const TABLE_PREFIX As String = "tbl"
 
-Public Sub DoSplitTable(ByVal ListObject As ListObject, ByVal ListColumn As ListColumn)
-    ' TODO ListObject is redundant, derive it from ListColumn
-    ' TODO Remove implicit references to ActiveWorkbook and ActiveSheet
-    Dim sheetnames As Collection
-    Set sheetnames = GetSheetNames(ListColumn)
+Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collection)
+    Dim ListObject As ListObject
+    Set ListObject = ListColumn.Parent
+    
+    Dim Workbook As Workbook
+    Set Workbook = ListObject.Parent.Parent
     
     Dim SourceWorksheet As Worksheet
     Set SourceWorksheet = ListObject.Parent
@@ -18,13 +19,15 @@ Public Sub DoSplitTable(ByVal ListObject As ListObject, ByVal ListColumn As List
 
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant
-    For Each SheetName In sheetnames
-        TryRemoveSheet ActiveWorkbook, SheetName
-        SourceWorksheet.Copy After:=PreviousWorksheet
-        Set NewWorksheet = Worksheets.Item(PreviousWorksheet.Index + 1)
-        NewWorksheet.Name = SheetName
-        FilterWorksheet NewWorksheet, ListColumn.Name, SheetName
-        Set PreviousWorksheet = NewWorksheet
+    For Each SheetName In SheetNames
+        If Not SheetExists(SourceWorksheet.Parent, SheetName) Then
+            'TryRemoveSheet ActiveWorkbook, SheetName
+            SourceWorksheet.Copy After:=PreviousWorksheet
+            Set NewWorksheet = Workbook.Worksheets.Item(PreviousWorksheet.Index + 1)
+            NewWorksheet.Name = SheetName
+            FilterWorksheet NewWorksheet, ListColumn.Name, SheetName
+            Set PreviousWorksheet = NewWorksheet
+        End If
     Next SheetName
 
     SourceWorksheet.Activate
@@ -32,17 +35,17 @@ End Sub
 
 Private Sub FilterWorksheet(ByVal Worksheet As Worksheet, ByVal ListColumnName As String, ByVal SheetName As String)
     Dim ListObject As ListObject
-    Set ListObject = Worksheet.ListObjects(1) ' TODO
+    Set ListObject = Worksheet.ListObjects.Item(1) ' TODO
 
     ListObject.Name = TABLE_PREFIX & SheetName ' TODO Move this out of this procedure
     
     Dim ListColumnIndex As Long
-    ListColumnIndex = ListObject.ListColumns(ListColumnName).Index
+    ListColumnIndex = ListObject.ListColumns.Item(ListColumnName).Index
 
     ListObject.Range.Autofilter Field:=ListColumnIndex, Criteria1:="<>" & SheetName, Operator:=xlOr
 
     Dim RangeToRemove As Range
-    Set RangeToRemove = ListObject.ListColumns(ListColumnName).DataBodyRange.SpecialCells(xlCellTypeVisible)
+    Set RangeToRemove = ListObject.ListColumns.Item(ListColumnName).DataBodyRange.SpecialCells(xlCellTypeVisible)
     Application.DisplayAlerts = False
     If Not RangeToRemove Is Nothing Then
         RangeToRemove.Rows.Delete

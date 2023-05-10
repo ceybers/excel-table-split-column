@@ -17,12 +17,14 @@ Attribute VarTypeToString.VB_Description = "Returns the string description of a 
     
     If VarTypeValue > vbArray Then
         IsArray = True
-        VarTypeValue = VarTypeValue - vbArray
     End If
     
-    If VarTypeValue >= vbEmpty And VarTypeValue <= vbLongLong Then
-        Result = VarTypeConstants(VarTypeValue)
-    ElseIf VarTypeValue = vbUserDefinedType Then
+    Dim VarTypeValueLessArray As Long
+    VarTypeValueLessArray = VarTypeValue - vbArray
+    
+    If VarTypeValueLessArray >= vbEmpty And VarTypeValueLessArray <= vbLongLong Then
+        Result = VarTypeConstants(VarTypeValueLessArray)
+    ElseIf VarTypeValueLessArray = vbUserDefinedType Then
         Result = "vbUserDefinedType"
     Else
         Result = UNDEFINED_CONSTANT

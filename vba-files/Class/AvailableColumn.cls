@@ -27,49 +27,56 @@ Attribute Name.VB_UserMemId = 0
     Name = This.Name
 End Property
 
-Public Property Let Name(ByVal vNewvalue As String)
-    This.Name = vNewvalue
+Public Property Let Name(ByVal vNewValue As String)
+    This.Name = vNewValue
 End Property
 
 Public Property Get UniqueValueCount() As Long
     UniqueValueCount = This.UniqueValueCount
 End Property
 
-Public Property Let UniqueValueCount(ByVal vNewvalue As Long)
-    This.UniqueValueCount = vNewvalue
+Public Property Let UniqueValueCount(ByVal vNewValue As Long)
+    This.UniqueValueCount = vNewValue
 End Property
 
 Public Property Get Hidden() As Boolean
     Hidden = This.Hidden
 End Property
 
-Public Property Let Hidden(ByVal vNewvalue As Boolean)
-    This.Hidden = vNewvalue
+Public Property Let Hidden(ByVal vNewValue As Boolean)
+    This.Hidden = vNewValue
 End Property
 
 Public Property Get Selected() As Boolean
     Selected = This.Selected
 End Property
 
-Public Property Let Selected(ByVal vNewvalue As Boolean)
-    This.Selected = vNewvalue
+Public Property Let Selected(ByVal vNewValue As Boolean)
+    This.Selected = vNewValue
 End Property
 
 Public Property Get Suitable() As Boolean
     Suitable = This.Suitable
 End Property
 
-Public Property Let Suitable(ByVal vNewvalue As Boolean)
-    This.Suitable = vNewvalue
+Public Property Let Suitable(ByVal vNewValue As Boolean)
+    This.Suitable = vNewValue
 End Property
 
 Public Property Get Index() As Long
     Index = This.Index
 End Property
 
-Public Property Let Index(ByVal vNewvalue As Long)
-    This.Index = vNewvalue
+Public Property Let Index(ByVal vNewValue As Long)
+    This.Index = vNewValue
 End Property
+
+Private Function IsSuitable(ByVal ColumnAnalysis As ColumnAnalysis) As Boolean
+    If ColumnAnalysis.AllCount < 1 Then Exit Function
+    If ColumnAnalysis.ColumnVarType <> (vbArray + vbString) Then Exit Function
+    
+    IsSuitable = True
+End Function
 
 Public Function Create(ByVal ListColumn As ListColumn) As AvailableColumn
     Dim ThisColumnAnalysis As ColumnAnalysis
@@ -83,11 +90,4 @@ Public Function Create(ByVal ListColumn As ListColumn) As AvailableColumn
         .Selected = False
         .Suitable = IsSuitable(ThisColumnAnalysis)
     End With
-End Function
-
-Private Function IsSuitable(ByVal ColumnAnalysis As ColumnAnalysis) As Boolean
-    If ColumnAnalysis.AllCount < 1 Then Exit Function
-    If ColumnAnalysis.ColumnVarType <> (vbArray + vbString) Then Exit Function
-    
-    IsSuitable = True
 End Function

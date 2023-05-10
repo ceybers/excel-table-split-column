@@ -5,8 +5,9 @@ END
 Attribute VB_Name = "AvailableColumns"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@PredeclaredId
 '@Folder "Model"
 Option Explicit
 
@@ -31,16 +32,16 @@ Public Property Get ShowHidden() As Boolean
     ShowHidden = This.ShowHidden
 End Property
 
-Public Property Let ShowHidden(ByVal vNewvalue As Boolean)
-    This.ShowHidden = vNewvalue
+Public Property Let ShowHidden(ByVal vNewValue As Boolean)
+    This.ShowHidden = vNewValue
 End Property
 
 Public Property Get ShowUnsuitable() As Boolean
     ShowUnsuitable = This.ShowUnsuitable
 End Property
 
-Public Property Let ShowUnsuitable(ByVal vNewvalue As Boolean)
-    This.ShowUnsuitable = vNewvalue
+Public Property Let ShowUnsuitable(ByVal vNewValue As Boolean)
+    This.ShowUnsuitable = vNewValue
 End Property
 
 Private Sub Class_Initialize()
@@ -80,12 +81,8 @@ Attribute GetAvailableColumns.VB_Description = "Returns a Collection of type Ava
     Next AvailableColumn
 End Function
 
-Public Function GetByName(ByVal ColumnName As String) As AvailableColumn
-    Set GetByName = This.Item(ColumnName)
-End Function
-
 Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
-    If Not GetByName(ColumnName).Suitable Then
+    If Not This.Item.Item(ColumnName).Suitable Then
         Exit Function
     End If
     
@@ -93,7 +90,7 @@ Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
     For Each AvailableColumn In This.Item
         AvailableColumn.Selected = (AvailableColumn.Name = ColumnName)
         If AvailableColumn.Selected Then
-            Set This.Selected = This.ListObject.ListColumns(AvailableColumn.Name)
+            Set This.Selected = This.ListObject.ListColumns.Item(AvailableColumn.Name)
             TrySelectByName = True
         End If
     Next AvailableColumn
@@ -108,7 +105,7 @@ Public Sub UpdateListView(ByVal ListView As ListView4)
         If Not ExistsInCollection(ListView.ListItems, AvailableColumn.Name) Then
             Set ListItem = ListView.ListItems.Add(Text:=AvailableColumn.Name, Key:=KEY_PREFIX & AvailableColumn.Name)
             ListItem.ListSubItems.Add Index:=1, Key:="ColType", Text:=UNSUITABLE_COLUMN
-            ListItem.ListSubItems.Add Index:=2, Key:="Count", Text:=""
+            ListItem.ListSubItems.Add Index:=2, Key:="Count", Text:=vbNullString
             ListItem.ListSubItems.Add Index:=3, Key:="SortIndex", Text:="c"
             
             If AvailableColumn.Suitable Then
@@ -129,7 +126,7 @@ Public Sub UpdateListView(ByVal ListView As ListView4)
     Next i
     
     For Each AvailableColumn In ColumnsToDraw
-        Set ListItem = ListView.ListItems(KEY_PREFIX & AvailableColumn.Name)
+        Set ListItem = ListView.ListItems.Item(KEY_PREFIX & AvailableColumn.Name)
         ListItem.Checked = AvailableColumn.Selected
         ListItem.Selected = AvailableColumn.Selected
         ListItem.ListSubItems.Item("SortIndex").Text = AvailableColumn.Index

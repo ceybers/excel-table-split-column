@@ -16,13 +16,7 @@ Public Sub TestColumnAnalysis()
 End Sub
 
 Public Sub TestDoSplitTable()
-    Dim lo As ListObject
-    Set lo = GetListObject
-
-    Dim lc As ListColumn
-    Set lc = GetListColumn(lo)
-
-    DoSplitTable lo, lc
+    Debug.Print "NYI"
 End Sub
 
 Public Sub TestGetListColumn()
@@ -46,13 +40,13 @@ Public Sub TestGetListObject()
 End Sub
 
 Public Sub TestGetSheetNames()
-    Dim sheetnames As Collection
-    Set sheetnames = GetSheetNames(GetListColumn(GetListObject()))
-    If Not sheetnames Is Nothing Then
-        Debug.Print "sheetnames count: " & sheetnames.Count
+    Dim SheetNames As Collection
+    Set SheetNames = GetSheetNames(GetListColumn(GetListObject()))
+    If Not SheetNames Is Nothing Then
+        Debug.Print "sheetnames count: " & SheetNames.Count
         Dim i As Long
-        For i = 1 To sheetnames.Count
-            Debug.Print " "; i; " "; sheetnames(i)
+        For i = 1 To SheetNames.Count
+            Debug.Print " "; i; " "; SheetNames(i)
             Next
         Else
             Debug.Print "sheetnames is nothing"

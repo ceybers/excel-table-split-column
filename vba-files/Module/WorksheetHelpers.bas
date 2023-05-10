@@ -38,3 +38,13 @@ Attribute TryRemoveSheet.VB_Description = "Tries to remove a Worksheet with a gi
         End If
     Next Worksheet
 End Function
+
+Public Function SheetExists(ByVal Workbook As Workbook, ByVal SheetName As String) As Boolean
+    Dim Worksheet As Worksheet
+    For Each Worksheet In Workbook.Worksheets
+        If Worksheet.Name = SheetName Then
+            SheetExists = True
+            Exit Function
+        End If
+    Next Worksheet
+End Function
