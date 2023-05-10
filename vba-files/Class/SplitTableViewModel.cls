@@ -10,14 +10,19 @@ Attribute VB_Exposed = False
 '@Folder "MVVM"
 Option Explicit
 
-Event PropertyChanged(PropertyName As String, vNewValue As Object)
+Event PropertyChanged(PropertyName As String)
 
 Private Type TState
     SelectedListObject As ListObject
     ListObjects As Collection
     SelectedListColumn As ListColumn
-    ListColumns As Collection
-    TargetSheets As Collection
+    ListColumns As Collection ' TODO Remove ifo Available Columns
+    AvailableColumns As AvailableColumns
+    TargetSheets As Collection ' of type TargetSheet
+    ShowHiddenColumns As Boolean
+    ShowUnsuitableColumns As Boolean
+    DeleteExistingSheets As Boolean
+    RemoveOtherSheets As Boolean
 End Type
 Private This As TState
 
@@ -55,14 +60,13 @@ Public Property Set SelectedListColumn(ByVal vNewValue As ListColumn)
     End If
     
     Set This.SelectedListColumn = vNewValue
-    OnPropertyChanged "SelectedListColumn", This.SelectedListColumn
+    OnPropertyChanged "SelectedListColumn"
     
     UpdateTargetSheets
 End Property
 
-Public Property Get ListColumns() As Collection
-    Debug.Assert Not This.ListColumns Is Nothing
-    Set ListColumns = This.ListColumns
+Public Property Get AvailableColumns() As AvailableColumns
+    Set AvailableColumns = This.AvailableColumns
 End Property
 
 Public Property Get SelectedListObject() As ListObject
@@ -80,14 +84,56 @@ Public Property Set SelectedListObject(ByVal vNewValue As ListObject)
     End If
     
     Set This.SelectedListObject = vNewValue
-    OnPropertyChanged "SelectedListObject", This.SelectedListObject
+    OnPropertyChanged "SelectedListObject"
     
-    UpdateListColumns
+    UpdateAvailableColumns
 End Property
 
 Public Property Get ListObjects() As Collection
     If This.ListObjects Is Nothing Then Exit Property
     Set ListObjects = This.ListObjects
+End Property
+
+Public Property Get ShowHiddenColumns() As Boolean
+    ShowHiddenColumns = This.ShowHiddenColumns
+End Property
+
+Public Property Let ShowHiddenColumns(ByVal vNewValue As Boolean)
+    If This.ShowHiddenColumns = vNewValue Then Exit Property
+    This.ShowHiddenColumns = vNewValue
+    This.AvailableColumns.ShowHidden = This.ShowHiddenColumns
+    OnPropertyChanged "ShowHiddenColumns"
+End Property
+
+Public Property Get ShowUnsuitableColumns() As Boolean
+    ShowUnsuitableColumns = This.ShowUnsuitableColumns
+End Property
+
+Public Property Let ShowUnsuitableColumns(ByVal vNewValue As Boolean)
+    If This.ShowUnsuitableColumns = vNewValue Then Exit Property
+    This.ShowUnsuitableColumns = vNewValue
+    This.AvailableColumns.ShowUnsuitable = This.ShowUnsuitableColumns
+    OnPropertyChanged "ShowUnsuitableColumns"
+End Property
+
+Public Property Get DeleteExistingSheets() As Boolean
+    DeleteExistingSheets = This.DeleteExistingSheets
+End Property
+
+Public Property Let DeleteExistingSheets(ByVal vNewValue As Boolean)
+    If This.DeleteExistingSheets = vNewValue Then Exit Property
+    This.DeleteExistingSheets = vNewValue
+    OnPropertyChanged "DeleteExistingSheets"
+End Property
+
+Public Property Get RemoveOtherSheets() As Boolean
+    RemoveOtherSheets = This.RemoveOtherSheets
+End Property
+
+Public Property Let RemoveOtherSheets(ByVal vNewValue As Boolean)
+    If This.RemoveOtherSheets = vNewValue Then Exit Property
+    This.RemoveOtherSheets = vNewValue
+    OnPropertyChanged "RemoveOtherSheets"
 End Property
 
 Public Sub Load(ByVal Workbook As Workbook)
@@ -97,9 +143,9 @@ Public Sub Load(ByVal Workbook As Workbook)
     End If
 End Sub
 
-Private Sub OnPropertyChanged(ByVal PropertyName As String, vNewValue As Object)
-    Debug.Print "PropertyChanged('"; PropertyName; "', vNewValue)"
-    RaiseEvent PropertyChanged(PropertyName, vNewValue)
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    Debug.Print "PropertyChanged('"; PropertyName; "')"
+    RaiseEvent PropertyChanged(PropertyName)
 End Sub
 
 Public Sub SelectListObjectByName(ByVal ListObjectName As String)
@@ -113,49 +159,43 @@ Public Sub SelectListObjectByName(ByVal ListObjectName As String)
 End Sub
 
 Public Sub SelectListColumnByName(ByVal ListColumnName As String)
-    Dim ColumnAnalysis As ColumnAnalysis
-    For Each ColumnAnalysis In This.ListColumns
-        If ColumnAnalysis.ListColumn.Name = ListColumnName Then
-            Set SelectedListColumn = ColumnAnalysis.ListColumn
-            Exit Sub
-        End If
-    Next ColumnAnalysis
+    Set SelectedListColumn = This.SelectedListObject.ListColumns(ListColumnName)
 End Sub
 
-Private Sub UpdateListColumns()
-    Debug.Assert Not This.ListColumns Is Nothing
+Private Sub UpdateAvailableColumns()
+    Debug.Assert Not This.AvailableColumns Is Nothing
     Debug.Assert Not This.SelectedListObject Is Nothing
     
-    CollectionHelpers.CollectionClear This.ListColumns
+    This.AvailableColumns.Load This.SelectedListObject
     
-    Dim ListColumn As ListColumn
-    For Each ListColumn In This.SelectedListObject.ListColumns
-        Dim ColumnAnalysis As ColumnAnalysis
-        Set ColumnAnalysis = New ColumnAnalysis
-        ColumnAnalysis.Analyse ListColumn
-        This.ListColumns.Add Key:=ListColumn.Name, Item:=ColumnAnalysis
-    Next ListColumn
-    
-    OnPropertyChanged "UpdateListColumns", This.ListColumns 'TODO OnCollectionChanged?
-    
+    OnPropertyChanged "UpdateListColumns"
+
     ' TODO Select first suitable column, not just first column
-    SelectListColumnByName This.ListColumns.Item(4).ListColumn
+    SelectListColumnByName This.AvailableColumns.GetAvailableColumns()(3).Name
+    
+    'CollectionHelpers.CollectionClear This.ListColumns
+    
+    'Dim ListColumn As ListColumn
+    'For Each ListColumn In This.SelectedListObject.ListColumns
+    '    Dim ColumnAnalysis As ColumnAnalysis
+    '    Set ColumnAnalysis = New ColumnAnalysis
+    '    ColumnAnalysis.Analyse ListColumn
+    '    This.ListColumns.Add Key:=ListColumn.Name, Item:=ColumnAnalysis
+    'Next ListColumn
+    '
+    'OnPropertyChanged "UpdateListColumns" 'TODO OnCollectionChanged?
+    
 End Sub
 
 Private Sub Class_Initialize()
-    Set This.ListColumns = New Collection
+    'Set This.ListColumns = New Collection
+    Set This.AvailableColumns = New AvailableColumns
     Set This.TargetSheets = New Collection
 End Sub
 
 Private Sub UpdateTargetSheets()
-    Dim ColumnAnalysis As ColumnAnalysis
-    For Each ColumnAnalysis In This.ListColumns
-        If ColumnAnalysis.ListColumn.Name = This.SelectedListColumn.Name Then
-            Set This.TargetSheets = ColumnAnalysis.GetTargetSheets
-            OnPropertyChanged "UpdateTargetSheets", This.TargetSheets 'TODO OnCollectionChanged?
-            Exit Sub
-        End If
-    Next ColumnAnalysis
+    Set This.TargetSheets = ColumnAnalysis.Create(This.SelectedListColumn).GetTargetSheets
+    OnPropertyChanged "UpdateTargetSheets"
 End Sub
 
 Private Function TargetSheetPercentage() As Double
@@ -179,7 +219,7 @@ Public Sub DoCheckAllTargetSheets()
     For Each TargetSheet In This.TargetSheets
         TargetSheet.Used = True
     Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets", This.TargetSheets 'TODO OnCollectionChanged?
+    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
 End Sub
 
 Public Sub DoCheckNoTargetSheets()
@@ -187,7 +227,7 @@ Public Sub DoCheckNoTargetSheets()
     For Each TargetSheet In This.TargetSheets
         TargetSheet.Used = False
     Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets", This.TargetSheets 'TODO OnCollectionChanged?
+    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
 End Sub
 
 Public Sub TryCheckTargetSheet(ByVal TargetSheetName As String, ByVal vNewValue As Boolean)
@@ -197,5 +237,5 @@ Public Sub TryCheckTargetSheet(ByVal TargetSheetName As String, ByVal vNewValue 
             TargetSheet.Used = vNewValue
         End If
     Next TargetSheet
-    OnPropertyChanged "UpdateTargetSheets", This.TargetSheets 'TODO OnCollectionChanged?
+    OnPropertyChanged "UpdateTargetSheets" 'TODO OnCollectionChanged?
 End Sub

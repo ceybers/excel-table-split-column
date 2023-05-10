@@ -22,6 +22,22 @@ Private Type TState
 End Type
 Private This As TState
 
+Private Sub chkDeleteExistingSheets_Click()
+    mViewModel.DeleteExistingSheets = Me.chkDeleteExistingSheets.Value
+End Sub
+
+Private Sub chkShowUnsuitableColumns_Click()
+    mViewModel.ShowUnsuitableColumns = Me.chkShowUnsuitableColumns.Value
+End Sub
+
+Private Sub chkRemoveOtherSheets_Click()
+    mViewModel.RemoveOtherSheets = Me.chkRemoveOtherSheets.Value
+End Sub
+
+Private Sub chkShowHiddenColumns_Click()
+    mViewModel.ShowHiddenColumns = Me.chkShowHiddenColumns.Value
+End Sub
+
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
@@ -40,9 +56,19 @@ Private Sub cmbSelectNone_Click()
     mViewModel.DoCheckNoTargetSheets
 End Sub
 
+Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
+    If Item.ForeColor <> vbGrayText Then
+        mViewModel.SelectListColumnByName Item.Text
+    Else
+        Item.Checked = False
+    End If
+End Sub
+
 Private Sub lvAvailableColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
     If Item.ForeColor <> vbGrayText Then
         mViewModel.SelectListColumnByName Item.Text
+    Else
+        Item.Selected = False
     End If
 End Sub
 
@@ -77,16 +103,20 @@ Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
     IView_ShowDialog = Not This.IsCancelled
 End Function
 
-Private Sub mViewModel_PropertyChanged(PropertyName As String, vNewValue As Object)
+Private Sub mViewModel_PropertyChanged(PropertyName As String)
     Select Case PropertyName
         Case "SelectedListObject":
             UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
         Case "UpdateListColumns":
-            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.ListColumns
+            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
         Case "SelectedListColumn":
             UpdateSelectedColumn Me.lvAvailableColumns, Me.refColumn
         Case "UpdateTargetSheets":
             UpdateTargetSheets Me.lvUsedValues, mViewModel.TargetSheets
+        Case "ShowHiddenColumns":
+            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
+        Case "ShowUnsuitableColumns":
+            UpdateAvailableColumns Me.lvAvailableColumns, mViewModel.AvailableColumns
     End Select
     
     UpdateControls
@@ -95,8 +125,8 @@ End Sub
 Private Sub InitalizeFromViewModel()
     LoadListObjectsToCombobox Me.cboTable, mViewModel.ListObjects
     'UpdateSelectedListObject Me.cboTable, mViewModel.SelectedListObject
-    mViewModel_PropertyChanged "SelectedListObject", Nothing
-    mViewModel_PropertyChanged "UpdateListColumns", Nothing
+    mViewModel_PropertyChanged "SelectedListObject"
+    mViewModel_PropertyChanged "UpdateListColumns"
 End Sub
 
 Private Sub LoadListObjectsToCombobox(ByVal ComboBox As ComboBox, ByVal ListObjects As Collection)
@@ -111,22 +141,22 @@ Private Sub UpdateSelectedListObject(ByVal ComboBox As ComboBox, ByVal ListObjec
     ComboBox = ListObject.Name
 End Sub
 
-Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal ListColumns As Collection)
+Private Sub UpdateAvailableColumns(ByVal ListView As ListView, ByVal AvailableColumns As AvailableColumns)
     InitalizeAvailableColumns ListView
-    
+
     Dim ListItem As ListItem
-    Dim ColumnAnalysis As ColumnAnalysis
-    For Each ColumnAnalysis In ListColumns
-        Set ListItem = ListView.ListItems.Add(Text:=ColumnAnalysis.ListColumn.Name)
-        ListItem.ListSubItems.Add Text:=VarTypeToString(ColumnAnalysis.ColumnVarType)
-        
-        If ColumnAnalysis.ColumnVarType = (vbArray + vbString) Then
-            ListItem.ListSubItems.Add Text:=ColumnAnalysis.UniqueCount
+    Dim ThisAvailableColumn As AvailableColumn
+    For Each ThisAvailableColumn In AvailableColumns.GetAvailableColumns
+        Set ListItem = ListView.ListItems.Add(Text:=ThisAvailableColumn.Name)
+        If ThisAvailableColumn.Suitable Then
+            ListItem.ListSubItems.Add Text:="Text"
+            ListItem.ListSubItems.Add Text:=ThisAvailableColumn.UniqueValueCount
         Else
+            ListItem.ListSubItems.Add Text:="Non-text"
             ListItem.ForeColor = vbGrayText
             ListItem.ListSubItems.Item(1).ForeColor = vbGrayText
         End If
-    Next ColumnAnalysis
+    Next ThisAvailableColumn
 End Sub
 
 Private Sub InitalizeAvailableColumns(ByVal ListView As ListView)
@@ -154,6 +184,7 @@ Private Sub UpdateSelectedColumn(ByVal ListView As ListView, ByVal RefEdit As Ob
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
         ListItem.Checked = (mViewModel.SelectedListColumn.Name = ListItem.Text)
+        ListItem.Selected = (mViewModel.SelectedListColumn.Name = ListItem.Text)
     Next ListItem
     
     'RefEdit.Text = mViewModel.SelectedListColumn.Name
@@ -189,4 +220,9 @@ Private Sub UpdateControls()
     Me.cmbSelectAll.Enabled = mViewModel.CanSelectAll
     Me.cmbSelectNone.Enabled = mViewModel.CanSelectNone
     Me.cmbOK.Enabled = mViewModel.IsValid
+    
+    Me.chkDeleteExistingSheets.Value = mViewModel.DeleteExistingSheets
+    Me.chkShowUnsuitableColumns.Value = mViewModel.ShowUnsuitableColumns
+    Me.chkRemoveOtherSheets.Value = mViewModel.RemoveOtherSheets
+    Me.chkShowHiddenColumns.Value = mViewModel.ShowHiddenColumns
 End Sub

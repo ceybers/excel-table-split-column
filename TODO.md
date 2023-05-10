@@ -10,9 +10,10 @@
 - [ ] Handle attempts to split into worksheets with invalid names.
 - [ ] Handle cases where sheet names are numbers. (Collection object Key property issue)
 ## Available Columns
-- [ ] Fix checkbox behaviour of "Available Columns" ListView.
+- [x] Fix checkbox behaviour of "Available Columns" ListView.
+- [x] Option to hide hidden/zero width columns.
+- [x] Option to hide unsuitable (non-text) columns.
 - [ ] Add warning icons to Available Columns with large amount of Unique Values.
-- [ ] Option to hide hidden/zero width columns.
 ## Target Sheets
 - [ ] Handle attempts to split into large amount of worksheets.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)

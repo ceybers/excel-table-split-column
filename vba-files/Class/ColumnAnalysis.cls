@@ -5,8 +5,9 @@ END
 Attribute VB_Name = "ColumnAnalysis"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@PredeclaredId
 '@Folder("Model")
 Option Explicit
 
@@ -114,4 +115,9 @@ Public Function GetTargetSheets() As Collection
         TargetSheet.Used = True
         GetTargetSheets.Add Item:=TargetSheet, Key:=TargetSheetName
     Next TargetSheetName
+End Function
+
+Public Function Create(ByVal ListColumn As ListColumn) As ColumnAnalysis
+    Set Create = New ColumnAnalysis
+    Create.Analyse ListColumn
 End Function
