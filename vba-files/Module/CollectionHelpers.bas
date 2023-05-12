@@ -9,7 +9,9 @@ Attribute ExistsInCollection.VB_Description = "Returns True if the given Value e
     
     Dim ThisValue As Variant
     For Each ThisValue In Collection
-        If ThisValue = Value Then
+        'If ThisValue = Value Then
+        If CStr(ThisValue) = CStr(Value) Then
+        'If StrComp(ThisValue, Value) Then ' Run-time error '458' Variable uses an Automation Type supported in Visual Basic
             ExistsInCollection = True
             Exit Function
         End If

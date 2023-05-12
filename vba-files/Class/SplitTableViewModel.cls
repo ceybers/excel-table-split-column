@@ -154,8 +154,11 @@ End Function
 Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
     If This.AvailableTables.TrySelectByName(TableName) Then
         TrySelectTableByName = True
+        
         OnPropertyChanged "SelectedListObject"
-        UpdateAvailableColumns
+        
+        This.AvailableColumns.Load This.AvailableTables.Selected
+        OnPropertyChanged "ResetAvailableColumns" ' Not an actual property
     End If
 End Function
 

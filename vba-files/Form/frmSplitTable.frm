@@ -112,21 +112,33 @@ Private Sub mViewModel_PropertyChanged(ByVal PropertyName As String)
     Select Case PropertyName
         Case "SelectedListColumn":
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+            mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
         Case "ShowUnsuitableColumns":
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
         Case "ShowHiddenColumns":
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
         Case "SelectedListObject":
             mViewModel.AvailableTables.UpdateCombobox Me.cboTable
+            'mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
+            'mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+            'mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
         Case "UpdateTargetSheets":
+            mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
             mViewModel.TargetSheets.UpdateListView Me.lvUsedValues
+        Case "ResetAvailableColumns":
+            mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
+            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
     End Select
     
     UpdateControls
 End Sub
 
 Private Sub InitalizeFromViewModel()
+    UpdateControls
+
     mViewModel.AvailableTables.InitializeCombobox Me.cboTable
+    mViewModel.AvailableColumns.ShowHidden = mViewModel.ShowHiddenColumns
+    mViewModel.AvailableColumns.ShowUnsuitable = mViewModel.ShowUnsuitableColumns
     mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
     mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
     

@@ -9,14 +9,18 @@
 - [x] Handle cases where sheet names are numbers. (Collection object Key property issue)
 - [x] Prompt user when no tables are found.
 - [x] Handle cases where workbook protection is enabled.
+- [x] BUG "Show unsuitable columns" is checked. Select new table. AvailableColumns does not display unsuitable columns until unchecking and rechecking the checkbox.
+- [ ] BUG  'Element not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
+  - Only affects after changing to a different Table.
+  - String comparisons not working as expected.
 ## Available Columns
 - [x] Fix checkbox behaviour of "Available Columns" ListView.
 - [x] Option to hide hidden/zero width columns.
 - [x] Option to hide unsuitable (non-text) columns.
 - [x] Update ListView from AvailableColumns class instead of UserForm Code Behind
 - [x] BUG: Changing checkboxes resets selection of column.
+- [x] Handle cases where there are no suitable columns in a ListObject.
 - [ ] Add warning icons to Available Columns with large amount of Unique Values.
-- [ ] Handle cases where there are no suitable columns in a ListObject.
 ## Target Sheets
 - [x] Handle attempts to split into large amount of worksheets.
   - Hardcoded a limit of 10 Unique values for now.
@@ -29,6 +33,7 @@
 - [x] Progress bar dialog and confirmation of completion.
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)
 - [ ] Option to remove the splitting column on the target sheets.
+- [ ] Decouple ProgressBar dialog from SplitTable procedure.
 ## Persistence
 - [ ] Persistent workbook storage to repeat/redo the most recent Split operation.
-- [ ] Persistent workbook storage for checkbox preferences.
+- [x] Persistent workbook storage for checkbox preferences.

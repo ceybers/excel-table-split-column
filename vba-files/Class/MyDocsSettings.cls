@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@Folder "Settings"
 Option Explicit
 
 Private Const SUBFOLDER As String = "Documents\Excel Macros"
@@ -40,10 +41,9 @@ Public Sub Save()
 End Sub
 
 Private Sub LoadFromFile()
-    Dim FullData As String
-    
-    Dim Read
     Open GetFullPath() For Binary As #1
+    
+    Dim FullData As String
     FullData = Space$(LOF(1))
     Get #1, , FullData
     Close #1
@@ -55,7 +55,7 @@ Private Sub LoadFromFile()
     End If
 End Sub
 
-Public Function SaveData()
+Public Sub SaveData()
     Open GetFullPath() For Output As #1
     Print #1, UUID
     Print #1, FLAGS_HEADER
@@ -65,7 +65,7 @@ Public Function SaveData()
     Print #1, vbTab; FlagKey; vbTab; This.Flags.Item(FlagKey)
     Next FlagKey
     Close #1
-End Function
+End Sub
 
 Private Sub CheckIfEmpty()
     Dim FileSystemObject As Object
@@ -112,16 +112,16 @@ Private Sub LoadFlags()
 End Sub
 
 Public Function GetFlag(ByVal FlagName As String) As Boolean
-    GetFlag = UCase(This.Flags.Item(FlagName)) = "TRUE"
+    GetFlag = UCase$(This.Flags.Item(FlagName)) = "TRUE"
 End Function
 
-Public Function SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
+Public Sub SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
     If FlagValue = True Then
         This.Flags.Item(FlagName) = "TRUE"
     Else
         This.Flags.Item(FlagName) = "FALSE"
     End If
-End Function
+End Sub
 
 Private Sub SetDefaultFlags()
     Set This.Flags = New Scripting.Dictionary

@@ -8,6 +8,7 @@ Private Const TEST_DATA_SHEETNAME As String = "Top20"
 Private Const TEST_DATA_NAME As String = "TestData.xlsx"
 Private Const TEST_DATA_FULLNAME As String = "C:\Users\User\Documents\Work\excel-table-split-column\TestData.xlsx"
 
+'@EntryPoint "ResetTestData"
 Public Sub ResetTestData()
     TryOpenTestDataWorkbook
     RemoveExcessWorksheets

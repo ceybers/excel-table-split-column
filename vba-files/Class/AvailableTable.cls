@@ -53,7 +53,7 @@ Public Function Create(ByVal ListObject As ListObject) As AvailableTable
     End With
 End Function
 
-Private Static Function IsSuitable(ByVal ListObject As ListObject) As Boolean
+Private Function IsSuitable(ByVal ListObject As ListObject) As Boolean
     'Dim Workbook As Workbook
     Dim Worksheet As Worksheet
     

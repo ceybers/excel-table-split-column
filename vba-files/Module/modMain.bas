@@ -2,6 +2,7 @@ Attribute VB_Name = "modMain"
 '@Folder "Main"
 Option Explicit
 
+'@EntryPoint "DoSplitTable"
 Public Sub DoSplitTable()
     If CheckNoTables(ActiveWorkbook) Then Exit Sub
     If CheckWorkbookProtected(ActiveWorkbook) Then Exit Sub
@@ -10,7 +11,7 @@ Public Sub DoSplitTable()
     Set ViewModel = New SplitTableViewModel
     ViewModel.Load ActiveWorkbook
     
-    ViewModel.DeleteExistingSheets = True
+    'ViewModel.DeleteExistingSheets = True
         
     Dim View As frmSplitTable
     Set View = frmSplitTable

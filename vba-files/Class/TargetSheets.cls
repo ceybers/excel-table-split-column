@@ -80,7 +80,7 @@ Public Property Get CanSelectNone() As Boolean
     CanSelectNone = SelectedItems > 0 And This.Item.Count > 0
 End Property
 
-Public Sub UpdateListView(ByVal ListView As ListView4)
+Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
 
     Dim TargetSheet As TargetSheet
@@ -94,15 +94,39 @@ Public Sub UpdateListView(ByVal ListView As ListView4)
         End If
     Next TargetSheet
 
+    'Dim i As Long
+    'For i = ListView.ListItems.Count To 1 Step -1
+    '   If Not ExistsInCollection(This.Item, ListView.ListItems.Item(i).Text) Then
+    '        Debug.Print "Remove item '"; ListView.ListItems.Item(i).Text; "'"
+    '        ListView.ListItems.Remove i
+    '    End If
+    'Next i
+    
     Dim i As Long
+    Dim j As Long
+    Dim found As Boolean
     For i = ListView.ListItems.Count To 1 Step -1
-        If Not ExistsInCollection(This.Item, ListView.ListItems.Item(i).Text) Then
+        found = False
+        Dim LHS As String
+        LHS = ListView.ListItems.Item(i).Text
+        
+        For j = 1 To This.Item.Count
+            Set TargetSheet = This.Item.Item(j)
+            Dim RHS As String
+            RHS = TargetSheet.Name
+            If LHS = RHS Then
+                found = True
+                Exit For
+            End If
+        Next j
+        
+        If found = False Then
             ListView.ListItems.Remove i
         End If
     Next i
-
+    
     For Each TargetSheet In This.Item
-        Set ListItem = ListView.ListItems(KEY_PREFIX & TargetSheet.Name)
+        Set ListItem = ListView.ListItems.Item(KEY_PREFIX & TargetSheet.Name)
         ListItem.Checked = TargetSheet.Used
         ListItem.Selected = False
         'ListItem.Selected = TargetSheet.Used
@@ -110,7 +134,7 @@ Public Sub UpdateListView(ByVal ListView As ListView4)
     Next TargetSheet
 End Sub
 
-Public Sub InitalizeTargetSheets(ByVal ListView As ListView4)
+Public Sub InitalizeTargetSheets(ByVal ListView As MSComctlLib.ListView)
     With ListView
         .ListItems.Clear
         
@@ -132,7 +156,7 @@ End Sub
 
 Public Function TryCheckByName(ByVal SheetName As String, ByVal vNewValue As Boolean) As Boolean
     Dim ThisTargetSheet As TargetSheet
-    Set ThisTargetSheet = This.Item(SheetName)
+    Set ThisTargetSheet = This.Item.Item(SheetName)
  
     If Not ThisTargetSheet.Suitable Then Exit Function
     

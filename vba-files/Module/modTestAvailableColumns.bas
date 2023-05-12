@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTestAvailableColumns"
+'@Folder "Test"
 Option Explicit
 
 Public Sub TestAvailableColumns()

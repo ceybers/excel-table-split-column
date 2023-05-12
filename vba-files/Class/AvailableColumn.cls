@@ -71,7 +71,7 @@ Public Property Let Index(ByVal vNewValue As Long)
     This.Index = vNewValue
 End Property
 
-Private Static Function IsSuitable(ByVal ColumnAnalysis As ColumnAnalysis) As Boolean
+Private Function IsSuitable(ByVal ColumnAnalysis As ColumnAnalysis) As Boolean
     If ColumnAnalysis.AllCount < 1 Then Exit Function
     If ColumnAnalysis.UniqueCount > 10 Then Exit Function
     If ColumnAnalysis.ColumnVarType <> (vbArray + vbString) Then Exit Function

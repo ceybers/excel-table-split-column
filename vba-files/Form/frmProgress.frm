@@ -14,6 +14,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@Folder "Prompts"
 Option Explicit
 
 Private Const IN_PROGRESS_MSG As String = "Busy splitting your table into separate sheets..."

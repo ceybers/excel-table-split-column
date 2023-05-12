@@ -14,6 +14,7 @@ Option Explicit
 Private Const KEY_PREFIX As String = "K"
 Private Const SUITABLE_COLUMN As String = "Text"
 Private Const UNSUITABLE_COLUMN As String = "Non-text"
+Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
 
 Private Type TState
     ListObject As ListObject
@@ -96,7 +97,7 @@ Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
     Next AvailableColumn
 End Function
 
-Public Sub UpdateListView(ByVal ListView As ListView4)
+Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
     Dim ColumnsToDraw As Collection
     Set ColumnsToDraw = GetAvailableColumns
     
@@ -135,6 +136,20 @@ Public Sub UpdateListView(ByVal ListView As ListView4)
     ListView.SortKey = 3
     ListView.SortOrder = lvwAscending
     ListView.Sorted = True
+    
+    If ColumnsToDraw.Count = 0 Then UpdateListViewEmpty ListView
+End Sub
+
+Private Sub UpdateListViewEmpty(ByVal ListView As MSComctlLib.ListView)
+    Dim ListItem As ListItem
+    Set ListItem = ListView.ListItems.Add(Text:=NO_SUITABLE_COLUMNS)
+    ListItem.ForeColor = vbGrayText
+    With ListView
+        .CheckBoxes = False
+        .ColumnHeaders.Item(1).Width = ListView.Width - 8
+        .ColumnHeaders.Item(2).Width = 0
+        .ColumnHeaders.Item(3).Width = 0
+    End With
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView4)

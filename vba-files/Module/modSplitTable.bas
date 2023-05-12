@@ -31,7 +31,6 @@ Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collec
     CurrentSheetNumber = CurrentSheetNumber + 1
         ProgressBarDialog.UpdateProgress CDbl(CurrentSheetNumber / SheetsToSplit)
         If Not SheetExists(SourceWorksheet.Parent, SheetName) Then
-            'TryRemoveSheet ActiveWorkbook, SheetName
             SourceWorksheet.Copy After:=PreviousWorksheet
             Set NewWorksheet = Workbook.Worksheets.Item(PreviousWorksheet.Index + 1)
             NewWorksheet.Name = SheetName

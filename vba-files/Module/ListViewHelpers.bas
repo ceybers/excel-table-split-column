@@ -1,4 +1,5 @@
 Attribute VB_Name = "ListViewHelpers"
+'@IgnoreModule ProcedureNotUsed
 '@Folder("Helpers")
 Option Explicit
 

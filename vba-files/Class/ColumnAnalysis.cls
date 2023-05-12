@@ -50,7 +50,7 @@ Public Sub Analyse(ByVal lc As ListColumn)
     AnalyseColumnUniqueness
 End Sub
 
-Private Static Function AnalyseColumnVarType(ByVal vv As Variant) As Long
+Private Function AnalyseColumnVarType(ByVal vv As Variant) As Long
     Dim colVarType As Long
     Dim thisVarType As Long
   

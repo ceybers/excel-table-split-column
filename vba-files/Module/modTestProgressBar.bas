@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTestProgressBar"
+'@Folder "Test"
 Option Explicit
 
 Public Sub TestProgressBar()

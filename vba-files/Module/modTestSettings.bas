@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTestSettings"
+'@Folder "Test"
 Option Explicit
 
 Public Sub TestSettings()
