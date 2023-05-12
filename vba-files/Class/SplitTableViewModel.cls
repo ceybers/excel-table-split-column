@@ -22,6 +22,7 @@ Private Type TState
     ShowUnsuitableColumns As Boolean
     DeleteExistingSheets As Boolean
     RemoveOtherSheets As Boolean
+    Settings As MyDocsSettings
 End Type
 Private This As TState
 
@@ -62,6 +63,7 @@ Public Property Let ShowHiddenColumns(ByVal vNewValue As Boolean)
     This.ShowHiddenColumns = vNewValue
     This.AvailableColumns.ShowHidden = This.ShowHiddenColumns
     OnPropertyChanged "ShowHiddenColumns"
+    SaveSettings
 End Property
 
 Public Property Get ShowUnsuitableColumns() As Boolean
@@ -73,6 +75,7 @@ Public Property Let ShowUnsuitableColumns(ByVal vNewValue As Boolean)
     This.ShowUnsuitableColumns = vNewValue
     This.AvailableColumns.ShowUnsuitable = This.ShowUnsuitableColumns
     OnPropertyChanged "ShowUnsuitableColumns"
+    SaveSettings
 End Property
 
 Public Property Get DeleteExistingSheets() As Boolean
@@ -83,6 +86,7 @@ Public Property Let DeleteExistingSheets(ByVal vNewValue As Boolean)
     If This.DeleteExistingSheets = vNewValue Then Exit Property
     This.DeleteExistingSheets = vNewValue
     OnPropertyChanged "DeleteExistingSheets"
+    SaveSettings
 End Property
 
 Public Property Get RemoveOtherSheets() As Boolean
@@ -93,12 +97,15 @@ Public Property Let RemoveOtherSheets(ByVal vNewValue As Boolean)
     If This.RemoveOtherSheets = vNewValue Then Exit Property
     This.RemoveOtherSheets = vNewValue
     OnPropertyChanged "RemoveOtherSheets"
+    SaveSettings
 End Property
 
 Private Sub Class_Initialize()
     Set This.AvailableTables = New AvailableTables
     Set This.AvailableColumns = New AvailableColumns
     Set This.TargetSheets = New TargetSheets
+    Set This.Settings = New MyDocsSettings
+    This.Settings.Load
 End Sub
 
 Public Sub Load(ByVal Workbook As Workbook)
@@ -106,10 +113,11 @@ Public Sub Load(ByVal Workbook As Workbook)
     If Not This.AvailableTables.Selected Is Nothing Then
         This.AvailableColumns.Load This.AvailableTables.Selected
     End If
+    LoadSettings
 End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
-    Debug.Print "PropertyChanged('"; PropertyName; "')"
+    'Debug.Print "PropertyChanged('"; PropertyName; "')"
     RaiseEvent PropertyChanged(PropertyName)
 End Sub
 
@@ -150,3 +158,18 @@ Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
         UpdateAvailableColumns
     End If
 End Function
+
+Private Sub LoadSettings()
+    This.ShowHiddenColumns = This.Settings.GetFlag(SHOW_HIDDEN_FLAG)
+    This.ShowUnsuitableColumns = This.Settings.GetFlag(SHOW_UNSUITABLE_FLAG)
+    This.DeleteExistingSheets = This.Settings.GetFlag(REPLACE_EXISTING_FLAG)
+    This.RemoveOtherSheets = This.Settings.GetFlag(REPLACE_OTHER_FLAG)
+End Sub
+
+Private Sub SaveSettings()
+    This.Settings.SetFlag SHOW_HIDDEN_FLAG, This.ShowHiddenColumns
+    This.Settings.SetFlag SHOW_UNSUITABLE_FLAG, This.ShowUnsuitableColumns
+    This.Settings.SetFlag REPLACE_EXISTING_FLAG, This.DeleteExistingSheets
+    This.Settings.SetFlag REPLACE_OTHER_FLAG, This.RemoveOtherSheets
+    This.Settings.Save
+End Sub

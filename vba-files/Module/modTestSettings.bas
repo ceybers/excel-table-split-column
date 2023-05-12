@@ -1,0 +1,10 @@
+Attribute VB_Name = "modTestSettings"
+Option Explicit
+
+Public Sub TestSettings()
+    Dim Settings As MyDocsSettings
+    Set Settings = New MyDocsSettings
+    Settings.Load
+    Debug.Print "Get SHOWHIDDEN = "; Settings.GetFlag("SHOWHIDDEN")
+    Settings.SetFlag "SHOWHIDDEN", "FALSE"
+End Sub
