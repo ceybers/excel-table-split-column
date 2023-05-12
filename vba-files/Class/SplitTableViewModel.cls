@@ -22,7 +22,7 @@ Private Type TState
     ShowUnsuitableColumns As Boolean
     DeleteExistingSheets As Boolean
     RemoveOtherSheets As Boolean
-    Settings As MyDocsSettings
+    Settings As ISettings
 End Type
 Private This As TState
 

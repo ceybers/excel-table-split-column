@@ -35,5 +35,5 @@
 - [ ] Option to remove the splitting column on the target sheets.
 - [ ] Decouple ProgressBar dialog from SplitTable procedure.
 ## Persistence
-- [ ] Persistent workbook storage to repeat/redo the most recent Split operation.
 - [x] Persistent workbook storage for checkbox preferences.
+- [ ] Persistent workbook storage to repeat/redo the most recent Split operation.

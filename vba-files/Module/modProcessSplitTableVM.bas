@@ -1,5 +1,5 @@
 Attribute VB_Name = "modProcessSplitTableVM"
-'@Folder("Test")
+'@Folder "SplitTable"
 Option Explicit
 
 

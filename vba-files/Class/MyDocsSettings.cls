@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "Settings"
 Option Explicit
+Implements ISettings
 
 Private Const SUBFOLDER As String = "Documents\Excel Macros"
 Private Const Filename As String = "tablesplitcolumn.ini"
@@ -21,24 +22,13 @@ Private Type TState
 End Type
 Private This As TState
 
-Public Function GetFolder() As String
+Private Function GetFolder() As String
     GetFolder = Environ$("USERPROFILE") & "\" & SUBFOLDER
 End Function
 
-Public Function GetFullPath() As String
+Private Function GetFullPath() As String
     GetFullPath = Environ$("USERPROFILE") & "\" & SUBFOLDER & "\" & Filename
 End Function
-
-Public Sub Load()
-    CheckIfEmpty
-    LoadFromFile
-    If Not IsMySettings Then Exit Sub
-    LoadFlags
-End Sub
-
-Public Sub Save()
-    SaveData
-End Sub
 
 Private Sub LoadFromFile()
     Open GetFullPath() For Binary As #1
@@ -55,7 +45,7 @@ Private Sub LoadFromFile()
     End If
 End Sub
 
-Public Sub SaveData()
+Private Sub SaveData()
     Open GetFullPath() For Output As #1
     Print #1, UUID
     Print #1, FLAGS_HEADER
@@ -111,17 +101,9 @@ Private Sub LoadFlags()
     Next i
 End Sub
 
-Public Function GetFlag(ByVal FlagName As String) As Boolean
-    GetFlag = UCase$(This.Flags.Item(FlagName)) = "TRUE"
+Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
+    ISettings_GetFlag = UCase$(This.Flags.Item(FlagName)) = "TRUE"
 End Function
-
-Public Sub SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
-    If FlagValue = True Then
-        This.Flags.Item(FlagName) = "TRUE"
-    Else
-        This.Flags.Item(FlagName) = "FALSE"
-    End If
-End Sub
 
 Private Sub SetDefaultFlags()
     Set This.Flags = New Scripting.Dictionary
@@ -129,4 +111,28 @@ Private Sub SetDefaultFlags()
     This.Flags.Add Key:=SHOW_UNSUITABLE_FLAG, Item:="FALSE"
     This.Flags.Add Key:=REPLACE_EXISTING_FLAG, Item:="TRUE"
     This.Flags.Add Key:=REPLACE_OTHER_FLAG, Item:="FALSE"
+End Sub
+
+Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
+    If FlagValue = True Then
+        This.Flags.Item(FlagName) = "TRUE"
+    Else
+        This.Flags.Item(FlagName) = "FALSE"
+    End If
+End Sub
+
+Private Sub ISettings_Load()
+    CheckIfEmpty
+    LoadFromFile
+    If Not IsMySettings Then Exit Sub
+    LoadFlags
+End Sub
+
+Private Sub ISettings_Save()
+    SaveData
+End Sub
+
+Private Sub ISettings_Reset()
+    SetDefaultFlags
+    SaveData
 End Sub
