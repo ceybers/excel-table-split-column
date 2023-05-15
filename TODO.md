@@ -36,6 +36,7 @@
   - VBA ListView does not support tri-state checkboxes.
 ## Other
 - [x] Progress bar dialog and confirmation of completion.
+- [x] Fixed modal/modeless bug with Progress bar dialog.
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)
 - [ ] Option to remove the splitting column on the target sheets.
 - [ ] Decouple ProgressBar dialog from SplitTable procedure.

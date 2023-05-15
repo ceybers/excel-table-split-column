@@ -6,8 +6,10 @@ This is an Excel VBA tool that will split a Table into separate worksheets, base
 # Features
 - ✅ Splits a Table into multiple worksheets based on the unique values in a selected column.
 - ✅ Detects which columns are not suitable to split on (i.e., The column is not exclusively text.)
+- ✅ Detects which values in the column are not suitable for Worksheet names (e.g., contains colons, slashes, or square brackets)
 - ✅ Option to remove all other worksheets before splitting.
 - ✅ Option to replace existing worksheets with the same name.
+
 ## Detects Invalid Sheet Names
 ![](Images/InvalidSheetNames.PNG)
 
