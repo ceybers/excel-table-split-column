@@ -24,8 +24,12 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Sub Load(ByVal ListColumn As ListColumn)
-    Set This.ListColumn = ListColumn
-    Set This.Item = ColumnAnalysis.Create(ListColumn).GetTargetSheets
+    If Not ListColumn Is Nothing Then
+        Set This.ListColumn = ListColumn
+        Set This.Item = ColumnAnalysis.Create(ListColumn).GetTargetSheets
+    Else
+        CollectionHelpers.CollectionClear This.Item
+    End If
 End Sub
 
 '@Description "Returns a Collection of TargetSheet where the Used property is True"

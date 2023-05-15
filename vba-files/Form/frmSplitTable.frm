@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSplitTable 
    Caption         =   "Split Table by Columns"
-   ClientHeight    =   5955
+   ClientHeight    =   8445.001
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   8250.001
@@ -67,6 +67,10 @@ Private Sub cmbSelectNone_Click()
     End If
 End Sub
 
+Private Sub lblPicSettings_Click()
+
+End Sub
+
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     If Not mViewModel.TrySelectColumnByName(Item.Text) Then
         Item.Checked = False
@@ -85,6 +89,13 @@ Private Sub lvUsedValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
     mViewModel.TryCheckTargetSheet Item.Text, Item.Checked
 End Sub
 
+Private Sub SetLabelPictures()
+    Set Me.lblPicColumns.Picture = Application.CommandBars.GetImageMso("TableColumnSelect", 32, 32)
+    Set Me.lblPicSheets.Picture = Application.CommandBars.GetImageMso("HeaderFooterSheetNameInsert", 32, 32)
+    Set Me.lblPicTables.Picture = Application.CommandBars.GetImageMso("TableAutoFormat", 32, 32)
+    Set Me.lblPicSettings.Picture = Application.CommandBars.GetImageMso("OmsViewAccountSetting", 32, 32)
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         Cancel = True
@@ -100,6 +111,7 @@ End Sub
 Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
     Set mViewModel = ViewModel
     
+    SetLabelPictures
     InitalizeFromViewModel
     This.IsCancelled = False
     

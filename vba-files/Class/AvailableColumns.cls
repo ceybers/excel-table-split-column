@@ -63,12 +63,11 @@ Public Sub Load(ByVal ListObject As ListObject)
         This.Item.Add Item:=ThisAvailableColumn, Key:=ListColumn.Name
         
         If This.Selected Is Nothing And ThisAvailableColumn.Suitable Then
+            Debug.Print "Defaulting selected column to '"; ThisAvailableColumn.ListColumn.Name; ";"
             ThisAvailableColumn.Selected = True
             Set This.Selected = ThisAvailableColumn.ListColumn
         End If
     Next ListColumn
-
-    Set This.Selected = ListObject.ListColumns.Item(1)
 End Sub
 
 '@Description "Returns a filtered Collection of type AvailableColumn"

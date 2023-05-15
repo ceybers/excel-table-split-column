@@ -133,6 +133,7 @@ Private Sub UpdateAvailableColumns()
 End Sub
 
 Private Sub UpdateTargetSheets()
+    'Debug.Print "UpdateTargetSheets()"
     This.TargetSheets.Load This.AvailableColumns.Selected
     OnPropertyChanged "UpdateTargetSheets"
 End Sub
@@ -146,6 +147,7 @@ End Sub
 Public Function TrySelectColumnByName(ByVal ColumnName As String) As Boolean
     If This.AvailableColumns.TrySelectByName(ColumnName) Then
         TrySelectColumnByName = True
+        'Debug.Print "SelectedListColumn TrySelectColumnByName"
         OnPropertyChanged "SelectedListColumn"
         UpdateTargetSheets
     End If
@@ -157,10 +159,13 @@ Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
         
         OnPropertyChanged "SelectedListObject"
         
+        'Debug.Print "SelectedListColumn TrySelectTableByName"
         OnPropertyChanged "SelectedListColumn"
         
         This.AvailableColumns.Load This.AvailableTables.Selected
         OnPropertyChanged "ResetAvailableColumns" ' Not an actual property
+        
+        UpdateTargetSheets
     End If
 End Function
 
