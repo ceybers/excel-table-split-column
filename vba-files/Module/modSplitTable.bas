@@ -1,4 +1,6 @@
 Attribute VB_Name = "modSplitTable"
+Attribute VB_Description = "Given a ListColumn and a Collection of worksheet Names, does the actual splitting."
+'@ModuleDescription "Given a ListColumn and a Collection of worksheet Names, does the actual splitting."
 '@Folder "SplitTable"
 Option Explicit
 
@@ -23,7 +25,7 @@ Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collec
     
     Dim ProgressBarDialog As frmProgress
     Set ProgressBarDialog = New frmProgress
-    ProgressBarDialog.Show
+    ProgressBarDialog.Show vbModeless
     
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant

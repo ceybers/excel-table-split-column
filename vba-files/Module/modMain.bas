@@ -10,8 +10,6 @@ Public Sub DoSplitTable()
     Dim ViewModel As SplitTableViewModel
     Set ViewModel = New SplitTableViewModel
     ViewModel.Load ActiveWorkbook
-    
-    'ViewModel.DeleteExistingSheets = True
         
     Dim View As frmSplitTable
     Set View = frmSplitTable

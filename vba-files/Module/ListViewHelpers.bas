@@ -3,21 +3,27 @@ Attribute VB_Name = "ListViewHelpers"
 '@Folder("Helpers")
 Option Explicit
 
+'@Obsolete "ZZZ"
 Public Sub CheckAllItems(ByVal ListView As ListView)
+    Debug.Assert False
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
         ListItem.Checked = True
     Next ListItem
 End Sub
 
+'@Obsolete "ZZZ"
 Public Sub UncheckAllItems(ByVal ListView As ListView)
+    Debug.Assert False
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
         ListItem.Checked = False
     Next ListItem
 End Sub
 
+'@Obsolete "ZZZ"
 Public Function SelectionPercent(ByVal ListView As ListView) As Double
+    Debug.Assert False
     Dim TotalListItems As Long
     TotalListItems = ListView.ListItems.Count
     If TotalListItems = 0 Then Exit Function

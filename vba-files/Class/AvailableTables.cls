@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TState
-    Item As Collection
+    Item As Collection ' of type ListObject (NOT AvailableTable!)
     Selected As ListObject
+    Workbook As Workbook
 End Type
 Private This As TState
 
@@ -27,16 +28,23 @@ End Sub
 
 Public Sub Load(ByVal Workbook As Workbook)
     CollectionHelpers.CollectionClear This.Item
+    Set This.Workbook = Workbook
+    LoadTablesIntoCollection
+    TryLoadFirstTable
+End Sub
 
+Private Sub LoadTablesIntoCollection()
     Dim ThisAvailableTable As AvailableTable
     Dim ListObject As ListObject
-    For Each ListObject In ListObjectHelpers.GetAllListObjects(Workbook)
+    For Each ListObject In ListObjectHelpers.GetAllListObjects(This.Workbook)
         Set ThisAvailableTable = AvailableTable.Create(ListObject)
         If ThisAvailableTable.Suitable Then
-            This.Item.Add Item:=ListObject, Key:=ThisAvailableTable.Name
+            This.Item.Add Item:=ListObject, Key:=ListObject.Name
         End If
     Next ListObject
+End Sub
 
+Private Sub TryLoadFirstTable()
     If This.Item.Count > 0 Then
         Set This.Selected = This.Item.Item(1)
     End If
@@ -52,11 +60,19 @@ Public Function TrySelectByName(ByVal TableName As String) As Boolean
     Next ListObject
 End Function
 
+'@Description "Updates the ComboBox to reflect the selected Table."
 Public Sub UpdateCombobox(ByVal ComboBox As ComboBox)
-    ComboBox.Value = This.Selected.Name
+Attribute UpdateCombobox.VB_Description = "Updates the ComboBox to reflect the selected Table."
+    ' This.Selected should never be nothing, as we select the first ListObject by default,
+    ' and we should not be able to complete Loading if there are zero ListObjects.
+    If Not This.Selected Is Nothing Then
+        ComboBox.Value = This.Selected.Name
+    End If
 End Sub
 
+'@Description "Clears all items from the given ComboBox, then adds one item for each ListObject, using its Name property."
 Public Sub InitializeCombobox(ByVal ComboBox As ComboBox)
+Attribute InitializeCombobox.VB_Description = "Clears all items from the given ComboBox, then adds one item for each ListObject, using its Name property."
     ComboBox.Clear
     Dim ListObject As ListObject
     For Each ListObject In This.Item

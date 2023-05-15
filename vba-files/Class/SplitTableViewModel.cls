@@ -110,9 +110,12 @@ End Sub
 
 Public Sub Load(ByVal Workbook As Workbook)
     This.AvailableTables.Load Workbook
-    If Not This.AvailableTables.Selected Is Nothing Then
-        This.AvailableColumns.Load This.AvailableTables.Selected
-    End If
+    
+    'If Not This.AvailableTables.Selected Is Nothing Then
+    This.AvailableColumns.Load This.AvailableTables.Selected
+    'End If
+    
+    ' CHK can this not be first, so we respect saved/preferred checkboxes?
     LoadSettings
 End Sub
 

@@ -1,7 +1,8 @@
 Attribute VB_Name = "modProcessSplitTableVM"
+Attribute VB_Description = "Handles some of the optional tasks from a ViewModel before splitting the Table."
+'@ModuleDescription "Handles some of the optional tasks from a ViewModel before splitting the Table."
 '@Folder "SplitTable"
 Option Explicit
-
 
 Public Sub ProcessViewModel(ByVal ViewModel As SplitTableViewModel)
     If ViewModel.RemoveOtherSheets Then

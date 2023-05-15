@@ -12,14 +12,24 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TState
+    ListColumn As ListColumn
     Name As String
     UniqueValueCount As Long
+    
     Selected As Boolean
     Hidden As Boolean
     Suitable As Boolean
     Index As Long
 End Type
 Private This As TState
+
+Public Property Get ListColumn() As ListColumn
+    Set ListColumn = This.ListColumn
+End Property
+
+Public Property Set ListColumn(ByVal vNewValue As ListColumn)
+    Set This.ListColumn = vNewValue
+End Property
 
 '@DefaultMember
 Public Property Get Name() As String
@@ -85,6 +95,7 @@ Public Function Create(ByVal ListColumn As ListColumn) As AvailableColumn
     
     Set Create = New AvailableColumn
     With Create
+        Set .ListColumn = ListColumn
         .Name = ListColumn.Name
         .UniqueValueCount = ThisColumnAnalysis.UniqueCount
         .Hidden = ListColumn.Range.EntireColumn.Hidden

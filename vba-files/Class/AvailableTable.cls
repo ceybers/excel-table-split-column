@@ -53,7 +53,9 @@ Public Function Create(ByVal ListObject As ListObject) As AvailableTable
     End With
 End Function
 
+'@Description "Does this table have more than one row AND protection is disabled?"
 Private Function IsSuitable(ByVal ListObject As ListObject) As Boolean
+Attribute IsSuitable.VB_Description = "Does this table have more than one row AND protection is disabled?"
     'Dim Workbook As Workbook
     Dim Worksheet As Worksheet
     

@@ -18,8 +18,9 @@ Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
 
 Private Type TState
     ListObject As ListObject
-    Item As Collection
+    Item As Collection ' of type AvailableColumn
     Selected As ListColumn
+    
     ShowHidden As Boolean
     ShowUnsuitable As Boolean
 End Type
@@ -62,27 +63,35 @@ Public Sub Load(ByVal ListObject As ListObject)
     Set This.Selected = ListObject.ListColumns.Item(1)
 End Sub
 
-'@Description "Returns a Collection of type AvailableColumn"
-Public Function GetAvailableColumns() As Collection
-Attribute GetAvailableColumns.VB_Description = "Returns a Collection of type AvailableColumn"
-    Dim n As Long
-    n = 1
-    
-    Set GetAvailableColumns = New Collection
+'@Description "Returns a filtered Collection of type AvailableColumn"
+Public Function GetFilteredColumns() As Collection
+Attribute GetFilteredColumns.VB_Description = "Returns a Collection of type AvailableColumn"
+    Set GetFilteredColumns = New Collection
     
     Dim AvailableColumn As AvailableColumn
     For Each AvailableColumn In This.Item
+        ' Show hidden columns or it wasn't hidden in the first place
         If This.ShowHidden = True Or AvailableColumn.Hidden = False Then
-            If This.ShowUnsuitable = True Or AvailableColumn.Suitable = True Then ' TODO CHK
-                GetAvailableColumns.Add Item:=AvailableColumn, Key:=AvailableColumn.Name
-                AvailableColumn.Index = n
-                n = n + 1
+            ' Show unsuitable columns or it wasn't unsuitable in the first place
+            If This.ShowUnsuitable = True Or AvailableColumn.Suitable = True Then
+                GetFilteredColumns.Add Item:=AvailableColumn, Key:=AvailableColumn.Name
             End If
         End If
     Next AvailableColumn
+    
+    ' This index should be matching the index in the ListView when we update it.
+    Dim i As Long
+    For i = 1 To GetFilteredColumns.Count
+        Set AvailableColumn = GetFilteredColumns.Item(i)
+        AvailableColumn.Index = i
+    Next i
 End Function
 
 Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
+    If ColumnName = NO_SUITABLE_COLUMNS Then
+        Exit Function
+    End If
+    
     If Not This.Item.Item(ColumnName).Suitable Then
         Exit Function
     End If
@@ -91,7 +100,10 @@ Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
     For Each AvailableColumn In This.Item
         AvailableColumn.Selected = (AvailableColumn.Name = ColumnName)
         If AvailableColumn.Selected Then
-            Set This.Selected = This.ListObject.ListColumns.Item(AvailableColumn.Name)
+            ' Gets the reference to the ListObject because we didn't store it in AvailableColumn
+            ' TODO Just store the reference in AvailableColumn
+            'Set This.Selected = This.ListObject.ListColumns.Item(AvailableColumn.Name)
+            Set This.Selected = AvailableColumn.ListColumn
             TrySelectByName = True
         End If
     Next AvailableColumn
@@ -99,26 +111,9 @@ End Function
 
 Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
     Dim ColumnsToDraw As Collection
-    Set ColumnsToDraw = GetAvailableColumns
+    Set ColumnsToDraw = GetFilteredColumns
     
-    Dim ListItem As ListItem
-    For Each AvailableColumn In ColumnsToDraw
-        If Not ExistsInCollection(ListView.ListItems, AvailableColumn.Name) Then
-            Set ListItem = ListView.ListItems.Add(Text:=AvailableColumn.Name, Key:=KEY_PREFIX & AvailableColumn.Name)
-            ListItem.ListSubItems.Add Index:=1, Key:="ColType", Text:=UNSUITABLE_COLUMN
-            ListItem.ListSubItems.Add Index:=2, Key:="Count", Text:=vbNullString
-            ListItem.ListSubItems.Add Index:=3, Key:="SortIndex", Text:="c"
-            
-            If AvailableColumn.Suitable Then
-                ListItem.ListSubItems.Item(1).Text = SUITABLE_COLUMN
-                ListItem.ListSubItems.Item(2).Text = AvailableColumn.UniqueValueCount
-            Else
-                ListItem.ForeColor = vbGrayText
-                ListItem.ListSubItems.Item(1).ForeColor = vbGrayText
-            End If
-        End If
-    Next AvailableColumn
-    
+    ' Remove obsolete items from ListView if they are not in ColumnsToDraw
     Dim i As Long
     For i = ListView.ListItems.Count To 1 Step -1
         If Not ExistsInCollection(ColumnsToDraw, ListView.ListItems.Item(i).Text) Then
@@ -126,6 +121,24 @@ Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
         End If
     Next i
     
+    ' This comes last because we need the earlier code to remove obsolete items first.
+    If ColumnsToDraw.Count = 0 Then
+        UpdateListViewEmpty ListView
+        Exit Sub
+    End If
+    
+    ' Add missing items from ColumnsToDraw into ListView
+    Dim Converter As IValueConverter
+    Set Converter = New AvailableColumnToListItem
+    
+    Dim ListItem As ListItem
+    For Each AvailableColumn In ColumnsToDraw
+        If Not ExistsInCollection(ListView.ListItems, AvailableColumn.Name) Then
+            Converter.Convert ListView, AvailableColumn
+        End If
+    Next AvailableColumn
+    
+    ' Rebuild the SortIndex in ListView
     For Each AvailableColumn In ColumnsToDraw
         Set ListItem = ListView.ListItems.Item(KEY_PREFIX & AvailableColumn.Name)
         ListItem.Checked = AvailableColumn.Selected
@@ -133,17 +146,17 @@ Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
         ListItem.ListSubItems.Item("SortIndex").Text = AvailableColumn.Index
     Next AvailableColumn
     
+    ' Sort accordingly
     ListView.SortKey = 3
     ListView.SortOrder = lvwAscending
     ListView.Sorted = True
-    
-    If ColumnsToDraw.Count = 0 Then UpdateListViewEmpty ListView
 End Sub
 
 Private Sub UpdateListViewEmpty(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=NO_SUITABLE_COLUMNS)
     ListItem.ForeColor = vbGrayText
+    
     With ListView
         .CheckBoxes = False
         .ColumnHeaders.Item(1).Width = ListView.Width - 8
@@ -153,6 +166,11 @@ Private Sub UpdateListViewEmpty(ByVal ListView As MSComctlLib.ListView)
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView4)
+    Dim Converter As IValueConverter
+    Set Converter = New AvailableColumnToListItem
+    Converter.Initialize ListView
+    Exit Sub
+    
     With ListView
         .ListItems.Clear
     

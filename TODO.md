@@ -10,9 +10,11 @@
 - [x] Prompt user when no tables are found.
 - [x] Handle cases where workbook protection is enabled.
 - [x] BUG "Show unsuitable columns" is checked. Select new table. AvailableColumns does not display unsuitable columns until unchecking and rechecking the checkbox.
-- [ ] BUG  'Element not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
+- [x] BUG  'Element not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
   - Only affects after changing to a different Table.
   - String comparisons not working as expected.
+## Available Tables
+- [ ] Try and choose the table in Selection or on Activesheet by default, instead of first ListObject found in the workbook. 
 ## Available Columns
 - [x] Fix checkbox behaviour of "Available Columns" ListView.
 - [x] Option to hide hidden/zero width columns.
