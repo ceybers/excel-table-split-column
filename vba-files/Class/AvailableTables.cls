@@ -79,3 +79,11 @@ Attribute InitializeCombobox.VB_Description = "Clears all items from the given C
         ComboBox.AddItem ListObject.Name
     Next ListObject
 End Sub
+
+Public Sub Activate()
+    If This.Selected Is Nothing Then Exit Sub
+    
+    Dim Worksheet As Worksheet
+    Set Worksheet = This.Selected.Parent
+    Worksheet.Activate
+End Sub

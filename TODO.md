@@ -22,8 +22,11 @@
 - [x] Update ListView from AvailableColumns class instead of UserForm Code Behind
 - [x] BUG: Changing checkboxes resets selection of column.
 - [x] Handle cases where there are no suitable columns in a ListObject.
+- [x] Activates/Selects the column in the worksheet when selcting it in the UserForm.
 - [ ] Add warning icons to Available Columns with large amount of Unique Values.
 ## Target Sheets
+- [x] ListView correctly clears when switching ListObjects
+- [x] ListView correctly clears when switching AvailableColumns
 - [x] Handle attempts to split into large amount of worksheets.
   - Hardcoded a limit of 10 Unique values for now.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)

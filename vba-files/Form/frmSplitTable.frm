@@ -110,23 +110,24 @@ End Function
 
 Private Sub mViewModel_PropertyChanged(ByVal PropertyName As String)
     Select Case PropertyName
+        Case "SelectedListObject":
+            mViewModel.AvailableTables.UpdateCombobox Me.cboTable
+            mViewModel.AvailableTables.Activate
         Case "SelectedListColumn":
+            ' Updates the LHS ListView with the correct checkboxes
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
             mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
+        Case "ResetAvailableColumns":
+            ' Updates the LHS ListView with correct items when switch tables
+            mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
+            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
+        Case "UpdateTargetSheets":
+            mViewModel.AvailableColumns.Activate
+            mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
+            mViewModel.TargetSheets.UpdateListView Me.lvUsedValues
         Case "ShowUnsuitableColumns":
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
         Case "ShowHiddenColumns":
-            mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
-        Case "SelectedListObject":
-            mViewModel.AvailableTables.UpdateCombobox Me.cboTable
-            'mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
-            'mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
-            'mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
-        Case "UpdateTargetSheets":
-            mViewModel.TargetSheets.InitalizeTargetSheets Me.lvUsedValues
-            mViewModel.TargetSheets.UpdateListView Me.lvUsedValues
-        Case "ResetAvailableColumns":
-            mViewModel.AvailableColumns.InitializeListView Me.lvAvailableColumns
             mViewModel.AvailableColumns.UpdateListView Me.lvAvailableColumns
     End Select
     

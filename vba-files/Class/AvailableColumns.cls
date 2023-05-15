@@ -52,12 +52,20 @@ End Sub
 
 Public Sub Load(ByVal ListObject As ListObject)
     Set This.ListObject = ListObject
-
+    Set This.Selected = Nothing
+    
     CollectionHelpers.CollectionClear This.Item
     
+    Dim ThisAvailableColumn As AvailableColumn
     Dim ListColumn As ListColumn
     For Each ListColumn In ListObject.ListColumns
-        This.Item.Add Item:=AvailableColumn.Create(ListColumn), Key:=ListColumn.Name
+        Set ThisAvailableColumn = AvailableColumn.Create(ListColumn)
+        This.Item.Add Item:=ThisAvailableColumn, Key:=ListColumn.Name
+        
+        If This.Selected Is Nothing And ThisAvailableColumn.Suitable Then
+            ThisAvailableColumn.Selected = True
+            Set This.Selected = ThisAvailableColumn.ListColumn
+        End If
     Next ListColumn
 
     Set This.Selected = ListObject.ListColumns.Item(1)
@@ -100,9 +108,6 @@ Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
     For Each AvailableColumn In This.Item
         AvailableColumn.Selected = (AvailableColumn.Name = ColumnName)
         If AvailableColumn.Selected Then
-            ' Gets the reference to the ListObject because we didn't store it in AvailableColumn
-            ' TODO Just store the reference in AvailableColumn
-            'Set This.Selected = This.ListObject.ListColumns.Item(AvailableColumn.Name)
             Set This.Selected = AvailableColumn.ListColumn
             TrySelectByName = True
         End If
@@ -169,22 +174,11 @@ Public Sub InitializeListView(ByVal ListView As ListView4)
     Dim Converter As IValueConverter
     Set Converter = New AvailableColumnToListItem
     Converter.Initialize ListView
-    Exit Sub
+End Sub
+
+Public Sub Activate()
+    If This.Selected Is Nothing Then Exit Sub
     
-    With ListView
-        .ListItems.Clear
-    
-        .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=75
-        .ColumnHeaders.Add Text:="Type", Width:=50
-        .ColumnHeaders.Add Text:="Values", Width:=50
-        .ColumnHeaders.Add Text:="idx", Width:=0
-        
-        .View = lvwReport
-        .BorderStyle = ccNone
-        .Gridlines = True
-        .FullRowSelect = True
-        .CheckBoxes = True
-        .LabelEdit = lvwManual
-    End With
+    This.Selected.Parent.Parent.Activate
+    This.Selected.DataBodyRange.Select
 End Sub

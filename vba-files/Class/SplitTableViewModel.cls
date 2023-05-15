@@ -13,15 +13,15 @@ Option Explicit
 Event PropertyChanged(ByVal PropertyName As String)
 
 Private Type TState
-    'SelectedListObject As ListObject
-    'ListObjects As Collection
     AvailableTables As AvailableTables
     AvailableColumns As AvailableColumns
     TargetSheets As TargetSheets
+    
     ShowHiddenColumns As Boolean
     ShowUnsuitableColumns As Boolean
     DeleteExistingSheets As Boolean
     RemoveOtherSheets As Boolean
+    
     Settings As ISettings
 End Type
 Private This As TState
@@ -111,16 +111,13 @@ End Sub
 Public Sub Load(ByVal Workbook As Workbook)
     This.AvailableTables.Load Workbook
     
-    'If Not This.AvailableTables.Selected Is Nothing Then
-    This.AvailableColumns.Load This.AvailableTables.Selected
-    'End If
-    
-    ' CHK can this not be first, so we respect saved/preferred checkboxes?
     LoadSettings
+    
+    This.AvailableColumns.Load This.AvailableTables.Selected
 End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
-    'Debug.Print "PropertyChanged('"; PropertyName; "')"
+    Debug.Print "PropertyChanged('"; PropertyName; "')"
     RaiseEvent PropertyChanged(PropertyName)
 End Sub
 
@@ -160,16 +157,20 @@ Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
         
         OnPropertyChanged "SelectedListObject"
         
+        OnPropertyChanged "SelectedListColumn"
+        
         This.AvailableColumns.Load This.AvailableTables.Selected
         OnPropertyChanged "ResetAvailableColumns" ' Not an actual property
     End If
 End Function
 
 Private Sub LoadSettings()
-    This.ShowHiddenColumns = This.Settings.GetFlag(SHOW_HIDDEN_FLAG)
-    This.ShowUnsuitableColumns = This.Settings.GetFlag(SHOW_UNSUITABLE_FLAG)
-    This.DeleteExistingSheets = This.Settings.GetFlag(REPLACE_EXISTING_FLAG)
-    This.RemoveOtherSheets = This.Settings.GetFlag(REPLACE_OTHER_FLAG)
+    ' Let via the property, not the underlying This.property_name, so that we trigger
+    ' code that updates .AvailableColumns etc.
+    ShowHiddenColumns = This.Settings.GetFlag(SHOW_HIDDEN_FLAG)
+    ShowUnsuitableColumns = This.Settings.GetFlag(SHOW_UNSUITABLE_FLAG)
+    DeleteExistingSheets = This.Settings.GetFlag(REPLACE_EXISTING_FLAG)
+    RemoveOtherSheets = This.Settings.GetFlag(REPLACE_OTHER_FLAG)
 End Sub
 
 Private Sub SaveSettings()
