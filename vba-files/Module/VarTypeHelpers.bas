@@ -1,5 +1,5 @@
 Attribute VB_Name = "VarTypeHelpers"
-'@Folder("Helpers")
+'@Folder "TableSplit.Helpers"
 Option Explicit
 
 Private Const UNDEFINED_CONSTANT As String = "undefined"

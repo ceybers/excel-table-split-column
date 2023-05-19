@@ -1,5 +1,5 @@
 Attribute VB_Name = "CollectionHelpers"
-'@Folder "Helpers"
+'@Folder "TableSplit.Helpers"
 Option Explicit
 
 '@Description "Returns True if the given Value exists in a Collection."

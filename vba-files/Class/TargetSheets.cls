@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("Model")
+'@Folder "TableSplit.Model"
 Option Explicit
 
 Private Const KEY_PREFIX As String = "K"
@@ -97,14 +97,6 @@ Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
             End If
         End If
     Next TargetSheet
-
-    'Dim i As Long
-    'For i = ListView.ListItems.Count To 1 Step -1
-    '   If Not ExistsInCollection(This.Item, ListView.ListItems.Item(i).Text) Then
-    '        Debug.Print "Remove item '"; ListView.ListItems.Item(i).Text; "'"
-    '        ListView.ListItems.Remove i
-    '    End If
-    'Next i
     
     Dim i As Long
     Dim j As Long

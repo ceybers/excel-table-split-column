@@ -7,14 +7,14 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("MVVM")
+'@Folder "MVVM.TableSplit.Converters"
 Option Explicit
 Implements IValueConverter
 
 Private Const KEY_PREFIX As String = "K"
 Private Const SUITABLE_COLUMN As String = "Text"
 Private Const UNSUITABLE_COLUMN As String = "Non-text"
-Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
+'Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
 
 Private Sub IValueConverter_Convert(ByVal Control As Object, ByVal Object As Object)
     Debug.Assert TypeOf Control Is ListView
@@ -77,5 +77,4 @@ Private Sub InitializeColumnHeaders(ByVal ListView As MSComctlLib.ListView)
         .ColumnHeaders.Add Text:="idx", Width:=0
     End With
 End Sub
-
 

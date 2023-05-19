@@ -1,5 +1,5 @@
 Attribute VB_Name = "modConstantFlags"
-'@Folder "Constants"
+'@Folder "TableSplit.Constants"
 Option Explicit
 
 Public Const SHOW_HIDDEN_FLAG As String = "SHOWHIDDEN"

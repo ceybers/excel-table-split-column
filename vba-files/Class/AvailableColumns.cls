@@ -8,12 +8,12 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model"
+'@Folder "TableSplit.Model"
 Option Explicit
 
 Private Const KEY_PREFIX As String = "K"
-Private Const SUITABLE_COLUMN As String = "Text"
-Private Const UNSUITABLE_COLUMN As String = "Non-text"
+'Private Const SUITABLE_COLUMN As String = "Text"
+'Private Const UNSUITABLE_COLUMN As String = "Non-text"
 Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
 
 Private Type TState
@@ -63,14 +63,13 @@ Public Sub Load(ByVal ListObject As ListObject)
         This.Item.Add Item:=ThisAvailableColumn, Key:=ListColumn.Name
         
         If This.Selected Is Nothing And ThisAvailableColumn.Suitable Then
-            Debug.Print "Defaulting selected column to '"; ThisAvailableColumn.ListColumn.Name; ";"
             ThisAvailableColumn.Selected = True
             Set This.Selected = ThisAvailableColumn.ListColumn
         End If
     Next ListColumn
 End Sub
 
-'@Description "Returns a filtered Collection of type AvailableColumn"
+'@Description "Returns a Collection of type AvailableColumn"
 Public Function GetFilteredColumns() As Collection
 Attribute GetFilteredColumns.VB_Description = "Returns a Collection of type AvailableColumn"
     Set GetFilteredColumns = New Collection
@@ -169,7 +168,7 @@ Private Sub UpdateListViewEmpty(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub InitializeListView(ByVal ListView As ListView4)
+Public Sub InitializeListView(ByVal ListView As MSComctlLib.ListView)
     Dim Converter As IValueConverter
     Set Converter = New AvailableColumnToListItem
     Converter.Initialize ListView

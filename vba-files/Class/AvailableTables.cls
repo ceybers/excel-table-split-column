@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("Model")
+'@Folder "TableSplit.Model"
 Option Explicit
 
 Private Type TState

@@ -1,5 +1,5 @@
 Attribute VB_Name = "modGetSheetNames"
-'@Folder "SplitTable"
+'@Folder "TableSplit.Modules"
 Option Explicit
 
 '@Description "Creates a collection of unique and valid sheet names from a ListColumn's DataBodyRange."

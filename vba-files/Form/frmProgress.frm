@@ -6,7 +6,6 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmProgress
    ClientTop       =   465
    ClientWidth     =   4230
    OleObjectBlob   =   "frmProgress.frx":0000
-   ShowModal       =   0   'False
    StartUpPosition =   1  'CenterOwner
 End
 Attribute VB_Name = "frmProgress"
@@ -14,7 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "Prompts"
+'@Folder "MVVM.TableSplit.Views"
 Option Explicit
 
 Private Const IN_PROGRESS_MSG As String = "Busy splitting your table into separate sheets..."

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-'@Folder "Settings"
+'@Folder "PersistentStorage.Abstract"
 '@Interface
 
 Public Sub Load()

@@ -1,6 +1,6 @@
-Attribute VB_Name = "ListViewHelpers"
+Attribute VB_Name = "zzzListViewHelpers"
 '@IgnoreModule ProcedureNotUsed
-'@Folder("Helpers")
+'@Folder "TableSplit.Helpers"
 Option Explicit
 
 '@Obsolete "ZZZ"

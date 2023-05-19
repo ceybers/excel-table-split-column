@@ -14,7 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-'@Folder "MVVM"
+'@Folder "MVVM.TableSplit.Views"
 Option Explicit
 Implements IView
 
@@ -65,10 +65,6 @@ Private Sub cmbSelectNone_Click()
     If mViewModel.TargetSheets.SelectNone Then
         mViewModel_PropertyChanged "UpdateTargetSheets"
     End If
-End Sub
-
-Private Sub lblPicSettings_Click()
-
 End Sub
 
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)

@@ -1,5 +1,5 @@
 Attribute VB_Name = "modMain"
-'@Folder "Main"
+'@Folder "TableSplit"
 Option Explicit
 
 '@EntryPoint "DoSplitTable"

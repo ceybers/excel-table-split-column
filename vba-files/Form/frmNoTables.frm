@@ -13,7 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "Prompts"
+'@Folder "MVVM.TableSplit.Views"
 Option Explicit
 
 Private Const IMAGEMSO_SIZE As Long = 32

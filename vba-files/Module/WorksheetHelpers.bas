@@ -1,6 +1,6 @@
 Attribute VB_Name = "WorksheetHelpers"
 '@IgnoreModule ProcedureNotUsed
-'@Folder "Helpers"
+'@Folder "TableSplit.Helpers"
 Option Explicit
 
 ' Reference: https://support.microsoft.com/en-us/office/rename-a-worksheet-3f1f7148-ee83-404d-8ef0-9ff99fbad1f9

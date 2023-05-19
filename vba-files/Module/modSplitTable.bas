@@ -1,7 +1,7 @@
 Attribute VB_Name = "modSplitTable"
 Attribute VB_Description = "Given a ListColumn and a Collection of worksheet Names, does the actual splitting."
 '@ModuleDescription "Given a ListColumn and a Collection of worksheet Names, does the actual splitting."
-'@Folder "SplitTable"
+'@Folder "TableSplit.Modules"
 Option Explicit
 
 Private Const TABLE_PREFIX As String = "tbl"
@@ -25,13 +25,16 @@ Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collec
     
     Dim ProgressBarDialog As frmProgress
     Set ProgressBarDialog = New frmProgress
-    ProgressBarDialog.Show vbModeless
-    
+    'ProgressBarDialog.Show vbModeless
+
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant
     For Each SheetName In SheetNames
     CurrentSheetNumber = CurrentSheetNumber + 1
         ProgressBarDialog.UpdateProgress CDbl(CurrentSheetNumber / SheetsToSplit)
+        Application.StatusBar = "Progress: " & CurrentSheetNumber & " of " & SheetsToSplit
+        DoEvents
+        
         If Not SheetExists(SourceWorksheet.Parent, SheetName) Then
             SourceWorksheet.Copy After:=PreviousWorksheet
             Set NewWorksheet = Workbook.Worksheets.Item(PreviousWorksheet.Index + 1)
@@ -40,7 +43,10 @@ Public Sub SplitTable(ByVal ListColumn As ListColumn, ByVal SheetNames As Collec
             Set PreviousWorksheet = NewWorksheet
         End If
     Next SheetName
-
+    
+    ProgressBarDialog.UpdateProgress 1#
+    ProgressBarDialog.Show vbModal
+    
     SourceWorksheet.Activate
 End Sub
 

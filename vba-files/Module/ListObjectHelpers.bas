@@ -1,5 +1,5 @@
 Attribute VB_Name = "ListObjectHelpers"
-'@Folder("Helpers")
+'@Folder "TableSplit.Helpers"
 Option Explicit
 
 '@Description "Returns a Collection containing all the ListObjects in a given Workbook"

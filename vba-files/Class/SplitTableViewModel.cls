@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "MVVM"
+'@Folder "MVVM.TableSplit.ViewModel"
 Option Explicit
 
 Event PropertyChanged(ByVal PropertyName As String)
@@ -117,23 +117,22 @@ Public Sub Load(ByVal Workbook As Workbook)
 End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
-    Debug.Print "PropertyChanged('"; PropertyName; "')"
     RaiseEvent PropertyChanged(PropertyName)
 End Sub
 
+'@Obsolete "ZZZ"
 Private Sub UpdateAvailableColumns()
+    Debug.Assert False
+
     Debug.Assert Not This.AvailableColumns Is Nothing
     Debug.Assert Not This.AvailableTables.Selected Is Nothing
     
     This.AvailableColumns.Load This.AvailableTables.Selected
     
     OnPropertyChanged "UpdateListColumns"
-
-    'TrySelectColumnByName This.AvailableColumns.GetAvailableColumns()(1).Name
 End Sub
 
 Private Sub UpdateTargetSheets()
-    'Debug.Print "UpdateTargetSheets()"
     This.TargetSheets.Load This.AvailableColumns.Selected
     OnPropertyChanged "UpdateTargetSheets"
 End Sub
@@ -147,7 +146,6 @@ End Sub
 Public Function TrySelectColumnByName(ByVal ColumnName As String) As Boolean
     If This.AvailableColumns.TrySelectByName(ColumnName) Then
         TrySelectColumnByName = True
-        'Debug.Print "SelectedListColumn TrySelectColumnByName"
         OnPropertyChanged "SelectedListColumn"
         UpdateTargetSheets
     End If
@@ -159,7 +157,6 @@ Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
         
         OnPropertyChanged "SelectedListObject"
         
-        'Debug.Print "SelectedListColumn TrySelectTableByName"
         OnPropertyChanged "SelectedListColumn"
         
         This.AvailableColumns.Load This.AvailableTables.Selected
