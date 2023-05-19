@@ -34,6 +34,7 @@ Private Sub LoadFromFile()
     Open GetFullPath() For Binary As #1
     
     Dim FullData As String
+    '@Ignore AssignmentNotUsed
     FullData = Space$(LOF(1))
     Get #1, , FullData
     Close #1

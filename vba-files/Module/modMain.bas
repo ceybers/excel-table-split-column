@@ -20,7 +20,7 @@ Public Sub DoSplitTable()
     Set ViewAsInterface = View
     
     If ViewAsInterface.ShowDialog(ViewModel) Then
-        ProcessViewModel ViewModel
+        ProcessSplitTableVM ViewModel
     End If
 End Sub
 
