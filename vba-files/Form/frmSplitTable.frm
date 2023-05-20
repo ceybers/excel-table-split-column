@@ -67,6 +67,10 @@ Private Sub cmbSelectNone_Click()
     End If
 End Sub
 
+Private Sub lblPicSettings_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show vbModal
+End Sub
+
 Private Sub lvAvailableColumns_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     If Not mViewModel.TrySelectColumnByName(Item.Text) Then
         Item.Checked = False
