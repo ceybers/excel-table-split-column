@@ -40,6 +40,7 @@
 ## Other
 - [x] Progress bar dialog and confirmation of completion.
 - [x] Fixed modal/modeless bug with Progress bar dialog.
+- [x] BUG When opening the tool for the second (or more) time, it will appear in front of the worksheet it was opened on the first run. 
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)
 - [ ] Option to remove the splitting column on the target sheets.
 - [ ] Decouple ProgressBar dialog from SplitTable procedure.

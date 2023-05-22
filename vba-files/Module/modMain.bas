@@ -14,7 +14,7 @@ Public Sub DoSplitTable()
     TrySelectUserSelectedTable ViewModel
     
     Dim View As frmSplitTable
-    Set View = frmSplitTable
+    Set View = New frmSplitTable
     
     Dim ViewAsInterface As IView
     Set ViewAsInterface = View
