@@ -11,14 +11,19 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements ISettings
 
+Private Const DO_DEBUG As Boolean = False
+
 Private Const SUBFOLDER As String = "Documents\Excel Macros"
 Private Const Filename As String = "tablesplitcolumn.ini"
 Private Const UUID As String = "{3ea2eff7-2549-4cf3-b8c4-2c3c7a3451f5}"
 Private Const FLAGS_HEADER As String = "FLAGS"
+Private Const TRUE_CONST As String = "TRUE"
+Private Const FALSE_CONST As String = "FALSE"
 
 Private Type TState
     Lines() As String
     Flags As Scripting.Dictionary
+    AutoSave As Boolean
 End Type
 Private This As TState
 
@@ -77,6 +82,8 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Flags = New Scripting.Dictionary
+    This.AutoSave = True
+    Load
 End Sub
 
 Private Function IsMySettings() As Boolean
@@ -88,6 +95,9 @@ Private Sub LoadFlags()
     Dim i As Long
     Dim ThisLine() As String
     Dim Extracting As Boolean
+    
+    If DO_DEBUG Then Debug.Print "Loaded "; UBound(This.Lines); " lines"
+    
     For i = 1 To UBound(This.Lines)
         ThisLine = Split(This.Lines(i), vbTab)
         If Extracting Then
@@ -103,33 +113,34 @@ Private Sub LoadFlags()
 End Sub
 
 Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
-    ISettings_GetFlag = UCase$(This.Flags.Item(FlagName)) = "TRUE"
+    ISettings_GetFlag = (UCase$(This.Flags.Item(FlagName)) = TRUE_CONST)
+    If DO_DEBUG Then Debug.Print "ISettings_GetFlag("; FlagName; ") = "; ISettings_GetFlag
 End Function
 
 Private Sub SetDefaultFlags()
     Set This.Flags = New Scripting.Dictionary
-    This.Flags.Add Key:=SHOW_HIDDEN_FLAG, Item:="FALSE"
-    This.Flags.Add Key:=SHOW_UNSUITABLE_FLAG, Item:="FALSE"
-    This.Flags.Add Key:=REPLACE_EXISTING_FLAG, Item:="TRUE"
-    This.Flags.Add Key:=REPLACE_OTHER_FLAG, Item:="FALSE"
 End Sub
 
 Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
+    If DO_DEBUG Then Debug.Print "ISettings_SetFlag("; FlagName; ") = "; FlagValue
+    
     If FlagValue = True Then
-        This.Flags.Item(FlagName) = "TRUE"
+        This.Flags.Item(FlagName) = TRUE_CONST
     Else
-        This.Flags.Item(FlagName) = "FALSE"
+        This.Flags.Item(FlagName) = FALSE_CONST
     End If
+    
+    If This.AutoSave Then SaveData
 End Sub
 
-Private Sub ISettings_Load()
+Private Sub Load()
     CheckIfEmpty
     LoadFromFile
     If Not IsMySettings Then Exit Sub
     LoadFlags
 End Sub
 
-Private Sub ISettings_Save()
+Private Sub Save()
     SaveData
 End Sub
 
@@ -137,3 +148,20 @@ Private Sub ISettings_Reset()
     SetDefaultFlags
     SaveData
 End Sub
+
+Private Function ISettings_GetSetting(ByVal SettingName As String) As String
+    Err.Raise Number:=42, Description:="NYI ISettings_GetSetting"
+End Function
+
+Private Sub ISettings_SetSetting(ByVal SettingName As String, ByVal Value As String)
+    Err.Raise Number:=42, Description:="NYI ISettings_SetSetting"
+End Sub
+
+Private Function ISettings_GetCollection(ByVal CollectionName As String) As Collection
+    Err.Raise Number:=42, Description:="NYI ISettings_GetSetting"
+End Function
+
+Private Sub ISettings_SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)
+    Err.Raise Number:=42, Description:="NYI ISettings_SetSetting"
+End Sub
+

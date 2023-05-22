@@ -21,9 +21,6 @@ Private Sub cmbClose_Click()
 End Sub
 
 Private Sub UserForm_Activate()
-    Set Me.lblPicHeader.Picture = Application.CommandBars.GetImageMso("MagicEightBall", 32, 32)
+    Set Me.lblPicHeader.Picture = Application.CommandBars.GetImageMso("CreateTableInDesignView", 32, 32)
 End Sub
 
-Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
-
-End Sub

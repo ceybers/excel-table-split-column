@@ -13,7 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '@Folder "MVVM.TableSplit.Views"
 Option Explicit
 Implements IView
@@ -90,10 +89,10 @@ Private Sub lvUsedValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
 End Sub
 
 Private Sub SetLabelPictures()
-    Set Me.lblPicColumns.Picture = Application.CommandBars.GetImageMso("TableColumnSelect", 32, 32)
-    Set Me.lblPicSheets.Picture = Application.CommandBars.GetImageMso("HeaderFooterSheetNameInsert", 32, 32)
-    Set Me.lblPicTables.Picture = Application.CommandBars.GetImageMso("TableAutoFormat", 32, 32)
-    Set Me.lblPicSettings.Picture = Application.CommandBars.GetImageMso("OmsViewAccountSetting", 32, 32)
+    Set Me.lblPicTables.Picture = Application.CommandBars.GetImageMso("AdpDiagramArrangeTables", 32, 32)
+    Set Me.lblPicSettings.Picture = Application.CommandBars.GetImageMso("ColumnActionsColumnSettings", 32, 32)
+    Set Me.lblPicColumns.Picture = Application.CommandBars.GetImageMso("FieldsMenu", 32, 32)
+    Set Me.lblPicSheets.Picture = Application.CommandBars.GetImageMso("CacheListData", 32, 32)
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)

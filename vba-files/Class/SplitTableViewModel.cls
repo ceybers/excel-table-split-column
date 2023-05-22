@@ -105,7 +105,7 @@ Private Sub Class_Initialize()
     Set This.AvailableColumns = New AvailableColumns
     Set This.TargetSheets = New TargetSheets
     Set This.Settings = New MyDocsSettings
-    This.Settings.Load
+    'This.Settings.Load
 End Sub
 
 Public Sub Load(ByVal Workbook As Workbook)
@@ -167,12 +167,10 @@ Public Function TrySelectTableByName(ByVal TableName As String) As Boolean
 End Function
 
 Private Sub LoadSettings()
-    ' Let via the property, not the underlying This.property_name, so that we trigger
-    ' code that updates .AvailableColumns etc.
-    ShowHiddenColumns = This.Settings.GetFlag(SHOW_HIDDEN_FLAG)
-    ShowUnsuitableColumns = This.Settings.GetFlag(SHOW_UNSUITABLE_FLAG)
-    DeleteExistingSheets = This.Settings.GetFlag(REPLACE_EXISTING_FLAG)
-    RemoveOtherSheets = This.Settings.GetFlag(REPLACE_OTHER_FLAG)
+    This.ShowHiddenColumns = This.Settings.GetFlag(SHOW_HIDDEN_FLAG)
+    This.ShowUnsuitableColumns = This.Settings.GetFlag(SHOW_UNSUITABLE_FLAG)
+    This.DeleteExistingSheets = This.Settings.GetFlag(REPLACE_EXISTING_FLAG)
+    This.RemoveOtherSheets = This.Settings.GetFlag(REPLACE_OTHER_FLAG)
 End Sub
 
 Private Sub SaveSettings()
@@ -180,5 +178,4 @@ Private Sub SaveSettings()
     This.Settings.SetFlag SHOW_UNSUITABLE_FLAG, This.ShowUnsuitableColumns
     This.Settings.SetFlag REPLACE_EXISTING_FLAG, This.DeleteExistingSheets
     This.Settings.SetFlag REPLACE_OTHER_FLAG, This.RemoveOtherSheets
-    This.Settings.Save
 End Sub

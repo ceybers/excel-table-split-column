@@ -2,6 +2,7 @@
 ## Complete
 - [x] Run Split procedure from code.
 - [x] Run Split procedure from UI.
+- [x] Added an easter egg About dialog.
 ## Halting Errors
 - [x] Handle cases where a table only has one row. (`.Value2` will then be a Variant and not an Array of Variants)
 - [x] Handle cases where worksheet protection is enabled.
@@ -10,9 +11,11 @@
 - [x] Prompt user when no tables are found.
 - [x] Handle cases where workbook protection is enabled.
 - [x] BUG "Show unsuitable columns" is checked. Select new table. AvailableColumns does not display unsuitable columns until unchecking and rechecking the checkbox.
-- [x] BUG  'Element not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
+- [x] BUG 'Elemnt not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
   - Only affects after changing to a different Table.
   - String comparisons not working as expected.
+- [x] BUG MyDocSettings throws an error on initial run and creating the first settings file.
+- [x] BUG Auto suggesting a table from the User's selection (Selection.ListObject) fails if they have a shape selected instead of a cell.
 ## Available Tables
 - [x] Try and choose the table in Selection or on Activesheet by default, instead of first ListObject found in the workbook. 
 ## Available Columns
@@ -42,4 +45,5 @@
 - [ ] Decouple ProgressBar dialog from SplitTable procedure.
 ## Persistence
 - [x] Persistent workbook storage for checkbox preferences.
+- [x] BUG Persistent options being incorrectly overwritten between opening the Dialog box and the User receiving control.
 - [ ] Persistent workbook storage to repeat/redo the most recent Split operation.

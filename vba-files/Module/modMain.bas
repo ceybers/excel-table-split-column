@@ -46,7 +46,10 @@ End Function
 Private Sub TrySelectUserSelectedTable(ByVal ViewModel As SplitTableViewModel)
 Attribute TrySelectUserSelectedTable.VB_Description = "When starting a Split, try and set the initially selected table based on Selection, or then ActiveSheet."
     Dim ListObject As ListObject
+    ' If a Shape is selected, trying to get ListObject raises an error.
+    On Error Resume Next
     Set ListObject = Selection.ListObject
+    On Error GoTo 0
     If ListObject Is Nothing Then
         If ActiveSheet.ListObjects.Count = 0 Then
             Exit Sub
