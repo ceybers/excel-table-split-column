@@ -13,9 +13,10 @@
 - [x] BUG "Show unsuitable columns" is checked. Select new table. AvailableColumns does not display unsuitable columns until unchecking and rechecking the checkbox.
 - [x] BUG 'Elemnt not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
   - Only affects after changing to a different Table.
-  - String comparisons not working as expected.
+- String comparisons not working as expected.
 - [x] BUG MyDocSettings throws an error on initial run and creating the first settings file.
 - [x] BUG Auto suggesting a table from the User's selection (Selection.ListObject) fails if they have a shape selected instead of a cell.
+- [x] BUG Fixed bug where the sheets for the first and last item on the list would not be filtered, and the filtering column would be deleted instead.
 ## Available Tables
 - [x] Try and choose the table in Selection or on Activesheet by default, instead of first ListObject found in the workbook. 
 ## Available Columns
