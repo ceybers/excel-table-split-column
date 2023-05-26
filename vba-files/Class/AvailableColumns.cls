@@ -51,6 +51,7 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Sub Load(ByVal ListObject As ListObject)
+    Log.Message "AvailableColumns.Load"
     Set This.ListObject = ListObject
     Set This.Selected = Nothing
     
@@ -59,6 +60,7 @@ Public Sub Load(ByVal ListObject As ListObject)
     Dim ThisAvailableColumn As AvailableColumn
     Dim ListColumn As ListColumn
     For Each ListColumn In ListObject.ListColumns
+        Log.Message "AvailableColumn.Create((" & ListColumn.Name & ")"
         Set ThisAvailableColumn = AvailableColumn.Create(ListColumn)
         This.Item.Add Item:=ThisAvailableColumn, Key:=ListColumn.Name
         

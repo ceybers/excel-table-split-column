@@ -7,21 +7,27 @@ Public Sub DoSplitTable()
     If CheckNoTables(ActiveWorkbook) Then Exit Sub
     If CheckWorkbookProtected(ActiveWorkbook) Then Exit Sub
     
+    Log.Message "Creating ViewModel"
     Dim ViewModel As SplitTableViewModel
     Set ViewModel = New SplitTableViewModel
     ViewModel.Load ActiveWorkbook
     
+    Log.Message "TrySelectUserSelectedTable(ViewModel)"
     TrySelectUserSelectedTable ViewModel
     
+    Log.Message "Creating View"
     Dim View As frmSplitTable
     Set View = New frmSplitTable
     
     Dim ViewAsInterface As IView
     Set ViewAsInterface = View
     
+    Log.Message "ViewAsInterface.ShowDialog"
     If ViewAsInterface.ShowDialog(ViewModel) Then
         ProcessSplitTableVM ViewModel
     End If
+    
+    Log.StopLogging
 End Sub
 
 '@Description "Checks if there are no ListObjects in any of the open Excel workbooks."
@@ -45,6 +51,8 @@ End Function
 '@Description "When starting a Split, try and set the initially selected table based on Selection, or then ActiveSheet."
 Private Sub TrySelectUserSelectedTable(ByVal ViewModel As SplitTableViewModel)
 Attribute TrySelectUserSelectedTable.VB_Description = "When starting a Split, try and set the initially selected table based on Selection, or then ActiveSheet."
+    Log.Message " TrySelectUserSelectedTable(ViewModel)"
+    
     Dim ListObject As ListObject
     ' If a Shape is selected, trying to get ListObject raises an error.
     On Error Resume Next
@@ -58,5 +66,6 @@ Attribute TrySelectUserSelectedTable.VB_Description = "When starting a Split, tr
     
     Set ListObject = ActiveSheet.ListObjects(1)
     
+    Log.Message "  ViewModel.TrySelectTableByName ListObject.Name"
     ViewModel.TrySelectTableByName ListObject.Name
 End Sub

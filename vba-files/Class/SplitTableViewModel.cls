@@ -109,10 +109,13 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Sub Load(ByVal Workbook As Workbook)
+    Log.Message "This.AvailableTables.Load Workbook"
     This.AvailableTables.Load Workbook
     
+    Log.Message "LoadSettings"
     LoadSettings
     
+    Log.Message "This.AvailableColumns.Load This.AvailableTables.Selected"
     This.AvailableColumns.Load This.AvailableTables.Selected
 End Sub
 

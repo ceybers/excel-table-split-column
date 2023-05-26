@@ -11,12 +11,16 @@
 - [x] Prompt user when no tables are found.
 - [x] Handle cases where workbook protection is enabled.
 - [x] BUG "Show unsuitable columns" is checked. Select new table. AvailableColumns does not display unsuitable columns until unchecking and rechecking the checkbox.
-- [x] BUG 'Elemnt not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
+- [x] BUG 'Element not Found' in TargetSheets.UpdateListView when trying to update a ListView in-situ, after changing to a different AvailableColumn.
   - Only affects after changing to a different Table.
-- String comparisons not working as expected.
+  - String comparisons not working as expected.
 - [x] BUG MyDocSettings throws an error on initial run and creating the first settings file.
 - [x] BUG Auto suggesting a table from the User's selection (Selection.ListObject) fails if they have a shape selected instead of a cell.
 - [x] BUG Fixed bug where the sheets for the first and last item on the list would not be filtered, and the filtering column would be deleted instead.
+  - Deleting a 1 column wide contiguous range in a ListObject deletes the entire column.
+  - Deleting a 2 or more wide contiguous range in a ListObject deletes the selected rows.
+  - Deleting a 1 column wide *non-contiguous* range in a ListObject deletes the rows.
+  - Therefore we use `Application.Intersect` to get the intersection of the `.EntireRow` of the selection (contiguous or not) along with the data actually inside the ListObject. This extends the selection from the splitting column to all the ListColumns affected.
 ## Available Tables
 - [x] Try and choose the table in Selection or on Activesheet by default, instead of first ListObject found in the workbook. 
 ## Available Columns
@@ -42,6 +46,7 @@
 - [x] Progress bar dialog and confirmation of completion.
 - [x] Fixed modal/modeless bug with Progress bar dialog.
 - [x] BUG When opening the tool for the second (or more) time, it will appear in front of the worksheet it was opened on the first run. 
+- [x] FIX Performance increased for large tables (1'000+) rows. (Changed from using Collections to Dictionaries for analysing Unique % of columns.)
 - [ ] Undo feature that will remove the newly created worksheets. (But won't be able to restore the deleted ones)
 - [ ] Option to remove the splitting column on the target sheets.
 - [ ] Decouple ProgressBar dialog from SplitTable procedure.

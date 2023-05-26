@@ -10,15 +10,27 @@ Private Const TABLE_PREFIX As String = "tbl"
 '@Description "Applies the instructions in the ViewModel to the Workbook."
 Public Sub ProcessSplitTableVM(ByVal ViewModel As SplitTableViewModel)
 Attribute ProcessSplitTableVM.VB_Description = "Applies the instructions in the ViewModel to the Workbook."
+    Dim mCalculationMode As Long
+    Dim mScreenUpdating As Boolean
+    mCalculationMode = Application.Calculation
+    mScreenUpdating = Application.ScreenUpdating
+    Application.Calculation = xlCalculationManual
+    Application.ScreenUpdating = False
+    
     TryRemoveOtherSheets ViewModel
     TryRemoveExistingSheets ViewModel
     
     SplitTable ViewModel
+    
+    Application.Calculation = mCalculationMode
+    Application.ScreenUpdating = mScreenUpdating
 End Sub
 
 '@Description "Optionally removes all worksheets in the workbook except the one we are splitting."
 Private Sub TryRemoveOtherSheets(ByVal ViewModel As SplitTableViewModel)
 Attribute TryRemoveOtherSheets.VB_Description = "Optionally removes all worksheets in the workbook except the one we are splitting."
+    Log.Message "TryRemoveOtherSheets"
+    
     If ViewModel.RemoveOtherSheets = False Then Exit Sub
     
     Dim ListObject As ListObject
@@ -40,6 +52,7 @@ End Sub
 '@Description "Optionally removes existing worksheets with the same name as the ones we are creating."
 Private Sub TryRemoveExistingSheets(ByVal ViewModel As SplitTableViewModel)
 Attribute TryRemoveExistingSheets.VB_Description = "Optionally removes existing worksheets with the same name as the ones we are creating."
+    Log.Message "TryRemoveExistingSheets"
     If ViewModel.DeleteExistingSheets = False Then Exit Sub
     
     Dim ListObject As ListObject
@@ -61,6 +74,7 @@ End Sub
 '@Description "Loops through the unique values one by one, creating new Reduced worksheets, and inserting them in the correct order."
 Private Sub SplitTable(ByVal ViewModel As SplitTableViewModel)
 Attribute SplitTable.VB_Description = "Loops through the unique values one by one, creating new Reduced worksheets, and inserting them in the correct order."
+    Log.Message "SplitTable"
     Dim ListColumn As ListColumn
     Dim SheetNames As Collection
 
@@ -113,6 +127,7 @@ End Sub
 '@Description "Filteres a Worksheet by a given ListColumn to a specific Criteria, then removes all the unfiltered rows."
 Private Sub ReduceWorksheet(ByVal Worksheet As Worksheet, ByVal ListColumnName As String, ByVal SheetName As String)
 Attribute ReduceWorksheet.VB_Description = "Filteres a Worksheet by a given ListColumn to a specific Criteria, then removes all the unfiltered rows."
+    Log.Message "ReduceWorksheet"
     Dim ListObject As ListObject
     Set ListObject = Worksheet.ListObjects.Item(1) ' TODO
 

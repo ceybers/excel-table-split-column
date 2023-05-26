@@ -22,7 +22,7 @@ Private Const FALSE_CONST As String = "FALSE"
 
 Private Type TState
     Lines() As String
-    Flags As Scripting.Dictionary
+    Flags As scripting.Dictionary
     AutoSave As Boolean
 End Type
 Private This As TState
@@ -81,7 +81,7 @@ Private Sub CheckIfEmpty()
 End Sub
 
 Private Sub Class_Initialize()
-    Set This.Flags = New Scripting.Dictionary
+    Set This.Flags = New scripting.Dictionary
     This.AutoSave = True
     Load
 End Sub
@@ -118,7 +118,7 @@ Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
 End Function
 
 Private Sub SetDefaultFlags()
-    Set This.Flags = New Scripting.Dictionary
+    Set This.Flags = New scripting.Dictionary
 End Sub
 
 Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)

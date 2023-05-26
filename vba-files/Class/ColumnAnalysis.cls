@@ -16,8 +16,8 @@ Private Type TState
     Name As String
     Value2 As Variant
     VarType As Long
-    AllValues As Collection
-    UniqueValues As Collection
+    AllValues As scripting.Dictionary
+    UniqueValues As scripting.Dictionary
 End Type
 Private This As TState
 
@@ -44,9 +44,12 @@ Public Property Get ColumnVarType() As Long
 End Property
 
 Public Sub Analyse(ByVal lc As ListColumn)
+    Log.Message "Analyse()", "ColumnAnalysis"
     Set This.ListColumn = lc
     This.Value2 = This.ListColumn.DataBodyRange.Value2
+    Log.Message "AnalyseColumnVarType", "ColumnAnalysis"
     This.VarType = AnalyseColumnVarType(This.Value2)
+    Log.Message "AnalyseColumnUniqueness()", "ColumnAnalysis"
     AnalyseColumnUniqueness
 End Sub
 
@@ -82,16 +85,18 @@ Private Sub AnalyseColumnUniqueness()
     Debug.Assert This.AllValues Is Nothing
     Debug.Assert This.UniqueValues Is Nothing
     
-    Set This.AllValues = New Collection
-    Set This.UniqueValues = New Collection
+    Set This.AllValues = New scripting.Dictionary
+    Set This.UniqueValues = New scripting.Dictionary
     
+    Dim i As Long
     Dim v As Variant
     For Each v In This.Value2
         If VarType(v) = (This.VarType - vbArray) Then
-            If Not ExistsInCollection(This.AllValues, v) Then
-                This.UniqueValues.Add Item:=v
+            If Not This.UniqueValues.Exists(CStr(v)) Then
+                This.UniqueValues.Add Key:=CStr(v), Item:=v
             End If
-            This.AllValues.Add Item:=v
+            This.AllValues.Add Key:=CStr(i), Item:=v
+            i = i + 1
         End If
     Next v
 End Sub
