@@ -13,6 +13,8 @@ Option Explicit
 Event PropertyChanged(ByVal PropertyName As String)
 
 Private Const MRU_COLLECTION_NAME As String = "MRU"
+Private Const SETTINGS_FILENAME As String = "tablesplitcolumn.ini"
+Private Const SETTINGS_UUID As String = "{3ea2eff7-2549-4cf3-b8c4-2c3c7a3451f5}"
 
 Private Type TState
     AvailableTables As AvailableTables
@@ -109,8 +111,8 @@ Private Sub Class_Initialize()
     Set This.TargetSheets = New TargetSheets
     
     Set This.Settings = MyDocSettings.Create( _
-        UUID:="{3ea2eff7-2549-4cf3-b8c4-2c3c7a3451f5}", _
-        Filename:="tablesplitcolumn.ini")
+        UUID:=SETTINGS_UUID, _
+        Filename:=SETTINGS_FILENAME)
     Set This.MRU = New MostRecentlyUsed
 End Sub
 
@@ -127,18 +129,6 @@ End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
     RaiseEvent PropertyChanged(PropertyName)
-End Sub
-
-'@Obsolete "ZZZ"
-Private Sub UpdateAvailableColumns()
-    Debug.Assert False
-
-    Debug.Assert Not This.AvailableColumns Is Nothing
-    Debug.Assert Not This.AvailableTables.Selected Is Nothing
-    
-    This.AvailableColumns.Load This.AvailableTables.Selected
-    
-    OnPropertyChanged "UpdateListColumns"
 End Sub
 
 Private Sub UpdateTargetSheets()

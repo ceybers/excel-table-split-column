@@ -94,8 +94,10 @@ Attribute SplitTable.VB_Description = "Loops through the unique values one by on
     Set PreviousWorksheet = SourceWorksheet
 
     Dim SheetsToSplit As Long
-    Dim CurrentSheetNumber As Long
     SheetsToSplit = SheetNames.Count
+    
+    Dim CurrentSheetNumber As Long
+    Dim SheetsActuallyTransfered As Long
     
     Dim ProgressBarDialog As frmProgress
     Set ProgressBarDialog = New frmProgress
@@ -104,7 +106,7 @@ Attribute SplitTable.VB_Description = "Loops through the unique values one by on
     Dim NewWorksheet As Worksheet
     Dim SheetName As Variant
     For Each SheetName In SheetNames
-    CurrentSheetNumber = CurrentSheetNumber + 1
+        CurrentSheetNumber = CurrentSheetNumber + 1
         ProgressBarDialog.UpdateProgress CDbl(CurrentSheetNumber / SheetsToSplit)
         Application.StatusBar = "Progress: " & CurrentSheetNumber & " of " & SheetsToSplit
         DoEvents
@@ -115,12 +117,28 @@ Attribute SplitTable.VB_Description = "Loops through the unique values one by on
             NewWorksheet.Name = SheetName
             ReduceWorksheet NewWorksheet, ListColumn.Name, SheetName
             Set PreviousWorksheet = NewWorksheet
+            SheetsActuallyTransfered = SheetsActuallyTransfered + 1
         End If
     Next SheetName
     
-    ProgressBarDialog.UpdateProgress 1#
-    ProgressBarDialog.Show vbModal
+    Log.Message "CurrentSheetNumber: " & CurrentSheetNumber, "SplitTable", Verbose_Level
+    Log.Message "SheetsActuallyTransfered: " & SheetsActuallyTransfered, "SplitTable", Verbose_Level
     
+    Dim SheetsNotTransferred As Long
+    SheetsNotTransferred = CurrentSheetNumber - SheetsActuallyTransfered
+    
+    If SheetsNotTransferred > 0 Then
+        Dim NotTransferredMessage As String
+        NotTransferredMessage = SheetsNotTransferred & " sheet(s) were not replaced!"
+        MsgBox NotTransferredMessage, vbExclamation + vbOKOnly, "Table Split Tool"
+    End If
+    
+    If SheetsActuallyTransfered > 0 Then
+        ProgressBarDialog.UpdateProgress 1#
+        ProgressBarDialog.Show vbModal
+    End If
+    
+    Application.StatusBar = vbNullString
     SourceWorksheet.Activate
 End Sub
 

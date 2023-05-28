@@ -122,13 +122,25 @@ Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)
     Next i
     
     For Each TargetSheet In This.Item
-        Set ListItem = ListView.ListItems.Item(KEY_PREFIX & TargetSheet.Name)
-        ListItem.Checked = TargetSheet.Used
-        ListItem.Selected = False
-        'ListItem.Selected = TargetSheet.Used
-        'ListItem.ListSubItems.Item("SortIndex").Text = TargetSheet.Index
+        If TryGetListItem(ListView, (KEY_PREFIX & TargetSheet.Name), ListItem) Then
+            'Set ListItem = ListView.ListItems.Item(KEY_PREFIX & TargetSheet.Name)
+            ListItem.Checked = TargetSheet.Used
+            ListItem.Selected = False
+            'ListItem.Selected = TargetSheet.Used
+            'ListItem.ListSubItems.Item("SortIndex").Text = TargetSheet.Index
+        End If
     Next TargetSheet
 End Sub
+
+Private Function TryGetListItem(ByVal ListView As MSComctlLib.ListView, ByVal Key As String, ByRef OutValue As ListItem) As Boolean
+    Dim ListItem As ListItem
+    For Each ListItem In ListView.ListItems
+        If ListItem.Key = Key Then
+            Set OutValue = ListItem
+            TryGetListItem = True
+        End If
+    Next ListItem
+End Function
 
 Public Sub InitalizeTargetSheets(ByVal ListView As MSComctlLib.ListView)
     With ListView

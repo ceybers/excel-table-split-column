@@ -11,6 +11,8 @@ Attribute VB_Exposed = False
 '@PredeclaredId
 Option Explicit
 
+Private Const MAX_UNIQUE_VALUES_FOR_SUITABLE As Long = 32
+
 Private Type TState
     ListColumn As ListColumn
     Name As String
@@ -83,7 +85,7 @@ End Property
 
 Private Function IsSuitable(ByVal ColumnAnalysis As ColumnAnalysis) As Boolean
     If ColumnAnalysis.AllCount < 1 Then Exit Function
-    If ColumnAnalysis.UniqueCount > 10 Then Exit Function
+    If ColumnAnalysis.UniqueCount > MAX_UNIQUE_VALUES_FOR_SUITABLE Then Exit Function
     If ColumnAnalysis.ColumnVarType <> (vbArray + vbString) Then Exit Function
     
     IsSuitable = True

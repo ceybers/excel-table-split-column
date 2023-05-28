@@ -32,6 +32,7 @@
 - [x] Handle cases where there are no suitable columns in a ListObject.
 - [x] Activates/Selects the column in the worksheet when selcting it in the UserForm.
 - [ ] Add warning icons to Available Columns with large amount of Unique Values.
+- [ ] Unique Values should only include items that will be Valid Sheet Names. 
 ## Target Sheets
 - [x] ListView correctly clears when switching ListObjects
 - [x] ListView correctly clears when switching AvailableColumns
