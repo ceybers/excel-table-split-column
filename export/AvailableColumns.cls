@@ -18,7 +18,7 @@ Private Const NO_SUITABLE_COLUMNS As String = "(No suitable columns)"
 
 Private Type TState
     ListObject As ListObject
-    Item As Collection ' of type AvailableColumn
+    Item As Scripting.Dictionary
     Selected As ListColumn
     
     ShowHidden As Boolean
@@ -47,20 +47,20 @@ Public Property Let ShowUnsuitable(ByVal vNewValue As Boolean)
 End Property
 
 Private Sub Class_Initialize()
-    Set This.Item = New Collection
+    Set This.Item = New Scripting.Dictionary
 End Sub
 
 Public Sub Load(ByVal ListObject As ListObject)
-    Log.Message "AvailableColumns.Load"
+    Log.Message "AvailableColumns.Load", "AvailableColumns", Verbose_Level
     Set This.ListObject = ListObject
     Set This.Selected = Nothing
     
-    CollectionHelpers.CollectionClear This.Item
+    This.Item.RemoveAll
     
     Dim ThisAvailableColumn As AvailableColumn
     Dim ListColumn As ListColumn
     For Each ListColumn In ListObject.ListColumns
-        Log.Message "AvailableColumn.Create((" & ListColumn.Name & ")"
+        Log.Message "AvailableColumn.Create((" & ListColumn.Name & ")", "AvailableColumns", Verbose_Level
         Set ThisAvailableColumn = AvailableColumn.Create(ListColumn)
         This.Item.Add Item:=ThisAvailableColumn, Key:=ListColumn.Name
         
@@ -76,8 +76,10 @@ Public Function GetFilteredColumns() As Collection
 Attribute GetFilteredColumns.VB_Description = "Returns a Collection of type AvailableColumn"
     Set GetFilteredColumns = New Collection
     
-    Dim AvailableColumn As AvailableColumn
-    For Each AvailableColumn In This.Item
+    Dim Key As Variant
+    For Each Key In This.Item.Keys
+        Dim AvailableColumn As AvailableColumn
+        Set AvailableColumn = This.Item.Item(Key)
         ' Show hidden columns or it wasn't hidden in the first place
         If This.ShowHidden = True Or AvailableColumn.Hidden = False Then
             ' Show unsuitable columns or it wasn't unsuitable in the first place
@@ -85,7 +87,7 @@ Attribute GetFilteredColumns.VB_Description = "Returns a Collection of type Avai
                 GetFilteredColumns.Add Item:=AvailableColumn, Key:=AvailableColumn.Name
             End If
         End If
-    Next AvailableColumn
+    Next Key
     
     ' This index should be matching the index in the ListView when we update it.
     Dim i As Long
@@ -100,18 +102,22 @@ Public Function TrySelectByName(ByVal ColumnName As String) As Boolean
         Exit Function
     End If
     
+    If Not This.Item.Exists(ColumnName) Then Exit Function
+    
     If Not This.Item.Item(ColumnName).Suitable Then
         Exit Function
     End If
     
-    Dim AvailableColumn As AvailableColumn
-    For Each AvailableColumn In This.Item
+    Dim Element As Variant
+    For Each Element In This.Item.Items
+        Dim AvailableColumn As AvailableColumn
+        Set AvailableColumn = Element
         AvailableColumn.Selected = (AvailableColumn.Name = ColumnName)
         If AvailableColumn.Selected Then
             Set This.Selected = AvailableColumn.ListColumn
             TrySelectByName = True
         End If
-    Next AvailableColumn
+    Next Element
 End Function
 
 Public Sub UpdateListView(ByVal ListView As MSComctlLib.ListView)

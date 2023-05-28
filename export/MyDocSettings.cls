@@ -97,6 +97,10 @@ Private Sub ISettings_SetSetting(ByVal SettingName As String, ByVal Value As Str
     If This.AutoSave Then SaveData
 End Sub
 
+Private Function ISettings_HasCollection(ByVal CollectionName As String) As Boolean
+    ISettings_HasCollection = This.Collections.Exists(CollectionName)
+End Function
+
 Private Function ISettings_GetCollection(ByVal CollectionName As String) As Collection
     If Not This.Collections.Exists(CollectionName) Then
         Err.Raise vbObjectError + 9, "MyDocSettings", "Collection does not exist"
@@ -147,7 +151,7 @@ Private Function GetFullPath() As String
     GetFullPath = Environ$("USERPROFILE") & "\" & SUBFOLDER & "\" & This.Filename
 End Function
 
-Private Function CollectionNameToSection(ByVal CollectionName As String)
+Private Function CollectionNameToSection(ByVal CollectionName As String) As String
     CollectionNameToSection = COLLECTIONS_HEADER & CollectionName & "]"
 End Function
 
@@ -236,7 +240,7 @@ Private Sub LoadSection(ByVal SectionHeading As String, ByVal Dictionary As Scri
     Next i
 End Sub
 
-Private Function LoadCollection(ByVal CollectionName As String)
+Private Function LoadCollection(ByVal CollectionName As String) As Collection
     Dim Result As Scripting.Dictionary
     Set Result = New Scripting.Dictionary
     This.Collections.Add Key:=CollectionName, Item:=Result
@@ -246,7 +250,6 @@ Private Function LoadCollection(ByVal CollectionName As String)
     
     LoadSection SectionName, Result
 End Function
-
 
 Private Sub SaveData()
     Dim FileNumber As Long

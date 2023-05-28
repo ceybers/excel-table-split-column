@@ -44,12 +44,12 @@ Public Property Get ColumnVarType() As Long
 End Property
 
 Public Sub Analyse(ByVal lc As ListColumn)
-    Log.Message "Analyse()", "ColumnAnalysis"
+    Log.Message "Analyse()", "ColumnAnalysis", Verbose_Level
     Set This.ListColumn = lc
     This.Value2 = This.ListColumn.DataBodyRange.Value2
-    Log.Message "AnalyseColumnVarType", "ColumnAnalysis"
+    Log.Message "AnalyseColumnVarType", "ColumnAnalysis", Verbose_Level
     This.VarType = AnalyseColumnVarType(This.Value2)
-    Log.Message "AnalyseColumnUniqueness()", "ColumnAnalysis"
+    Log.Message "AnalyseColumnUniqueness()", "ColumnAnalysis", Verbose_Level
     AnalyseColumnUniqueness
 End Sub
 

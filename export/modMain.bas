@@ -4,6 +4,8 @@ Option Explicit
 
 '@EntryPoint "DoSplitTable"
 Public Sub DoSplitTable()
+    Log.SetFilterLevel Info_level
+    
     If CheckNoTables(ActiveWorkbook) Then Exit Sub
     If CheckWorkbookProtected(ActiveWorkbook) Then Exit Sub
     
@@ -25,6 +27,7 @@ Public Sub DoSplitTable()
     Log.Message "ViewAsInterface.ShowDialog"
     If ViewAsInterface.ShowDialog(ViewModel) Then
         ProcessSplitTableVM ViewModel
+        ViewModel.Commit
     End If
     
     Log.StopLogging

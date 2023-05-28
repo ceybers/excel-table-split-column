@@ -55,5 +55,5 @@
 ## Persistence
 - [x] Persistent workbook storage for checkbox preferences.
 - [x] BUG Persistent options being incorrectly overwritten between opening the Dialog box and the User receiving control.
+- [x] User level MRU that records the name of the splitting column, and pre-emptively selects them in descending order, while obeying whether or not they can be applied.
 - [ ] Persistent workbook storage to repeat/redo the most recent Split operation.
-- [ ] User level MRU that records the name of columns that are split, and pre-emptively selects them in descending order., while obeying whether or not they can be applied.

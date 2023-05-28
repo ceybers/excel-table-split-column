@@ -116,10 +116,10 @@ Private Sub IDebugEx_Many(ByVal ArrayToLog As Variant, Optional ByVal Topic As V
     Dim i As Long
     For i = FirstIndex To LastIndex
         If Rank = 1 Then
-            IDebugEx_Variable "• " & Format(i, "00") & ": " & (ArrayToLog(i)), Topic, LogLevel
+            IDebugEx_Variable "• " & Format$(i, "00") & ": " & (ArrayToLog(i)), Topic, LogLevel
         Else
             If IsError(ArrayToLog(i, 1)) Then
-                IDebugEx_Variable "• " & Format(i, "00") & ": " & CStr(ArrayToLog(i, 1)), Topic, LogLevel
+                IDebugEx_Variable "• " & Format$(i, "00") & ": " & CStr(ArrayToLog(i, 1)), Topic, LogLevel
             Else
                 ' Need to change this to separate prefix (bullet and index) from variant
                 IDebugEx_Variable (ArrayToLog(i, 1)), Topic, LogLevel
@@ -201,4 +201,5 @@ End Function
 Private Sub IDebugEx_AddProvider(ByVal Provider As ILoggingProvider)
     This.Providers.Add Item:=Provider
 End Sub
+
 

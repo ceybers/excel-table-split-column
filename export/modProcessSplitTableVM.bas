@@ -142,9 +142,11 @@ Attribute ReduceWorksheet.VB_Description = "Filteres a Worksheet by a given List
     Set RangeToRemove = ListObject.ListColumns.Item(ListColumnName).DataBodyRange.SpecialCells(xlCellTypeVisible)
     Application.DisplayAlerts = False
     If Not RangeToRemove Is Nothing Then
-        RangeToRemove.Rows.Delete
+        Application.Intersect(RangeToRemove.EntireRow, ListObject.DataBodyRange).Delete
     End If
     Application.DisplayAlerts = True
 
     ListObject.Range.Autofilter Field:=ListColumnIndex
+    
+    ListObject.ListColumns.Item(ListColumnName).DataBodyRange.Select
 End Sub
