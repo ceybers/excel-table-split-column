@@ -37,6 +37,8 @@
 - [x] ListView correctly clears when switching AvailableColumns
 - [x] Handle attempts to split into large amount of worksheets.
   - Hardcoded a limit of 10 Unique values for now.
+- [ ] Option dialog with slider for maximum Unique values.
+- [ ] Store maximum Unique values in User-level persistence.
 - [ ] Option to only show target sheet names that are already filtered. (pre-filtered table)
 - [ ] ~~Consider adding Target Name search box.~~
 - [ ] ~~"Add Current Selection to Filter" option for search box.~~
@@ -54,3 +56,4 @@
 - [x] Persistent workbook storage for checkbox preferences.
 - [x] BUG Persistent options being incorrectly overwritten between opening the Dialog box and the User receiving control.
 - [ ] Persistent workbook storage to repeat/redo the most recent Split operation.
+- [ ] User level MRU that records the name of columns that are split, and pre-emptively selects them in descending order., while obeying whether or not they can be applied.
